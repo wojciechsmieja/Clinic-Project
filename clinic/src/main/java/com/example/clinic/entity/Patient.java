@@ -2,31 +2,33 @@ package com.example.clinic.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name="pacjent")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_pac")
+    @Column(name="id_pac",nullable = false)
     private Long id;
 
-    @Column(name="imie",nullable = false)
+    @Column(name="imie",nullable = false, length = 32)
     private String name;
 
-    @Column(name="nazwisko", nullable=false)
+    @Column(name="nazwisko", nullable=false, length = 32)
     private String surname;
 
-    @Column(nullable=false)
+    @Column(nullable=false, length = 11)
     private String pesel;
 
     @Column(name="data_ur", nullable = false)
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
-    @Column(name="email")
+    @Column(name="email", length = 32)
     private String email;
 
     public Patient() {}
-    public Patient(Long id, String name, String surname, String pesel, String dateOfBirth, String email) {
+    public Patient(Long id, String name, String surname, String pesel, LocalDate dateOfBirth, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -51,7 +53,7 @@ public class Patient {
         return pesel;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -75,7 +77,7 @@ public class Patient {
         this.pesel = pesel;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
