@@ -1,5 +1,6 @@
 package com.example.clinic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,21 +8,26 @@ import jakarta.persistence.*;
 public class LabTech {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_lab")
+    @Column(name="id_lab", nullable=false)
     private Long id;
-    @Column(name="imie")
+
+    @Column(name="imie", nullable = false, length = 32)
     private String name;
-    @Column(name="nazwisko")
+
+    @Column(name="nazwisko", nullable = false, length = 32)
     private String surname;
-    @Column(name="id_prac")
-    private Long idPrac;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name="id_prac", nullable=false)
+    private Employee employee;
 
     public LabTech() {}
-    public LabTech(Long id, String name, String surname, Long idPrac) {
+    public LabTech(Long id, String name, String surname, Employee employee) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.idPrac = idPrac;
+        this.employee = employee;
     }
 
     public Long getId() {
@@ -48,11 +54,11 @@ public class LabTech {
         this.surname = surname;
     }
 
-    public Long getIdPrac() {
-        return idPrac;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setIdPrac(Long idPrac) {
-        this.idPrac = idPrac;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 }

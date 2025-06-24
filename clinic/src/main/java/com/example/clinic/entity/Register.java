@@ -2,46 +2,34 @@ package com.example.clinic.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 
 @Entity
-@Table(name="lekarz")
-public class Doctor {
+@Table(name="rejestrator")
+public class Register {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_lek", nullable=false)
-    private Long id;
+    @Column(name="id_rej", nullable=false)
+    private Long id_rej;
 
-    @Column(name="imie", nullable=false, length = 32)
+    @Column(name="imie", nullable=false)
     private String name;
 
-    @Column(name="nazwisko", nullable=false, length = 32)
+    @Column(name="nazwisko", nullable=false)
     private String surname;
 
-    @Column(nullable=false, length = 7)
-    private String npwz;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_prac", nullable=false)
     private Employee employee;
 
-    public Doctor() {  }
-
-    public Doctor(Long id, String name, String npwz ,String surname, Employee employee) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.npwz = npwz;
-        this.employee = employee;
-    }
+    public Register() {}
 
     public Long getId() {
-        return id;
+        return id_rej;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id_rej = id;
     }
 
     public String getName() {
@@ -58,14 +46,6 @@ public class Doctor {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getNpwz() {
-        return npwz;
-    }
-
-    public void setNpwz(String npwz) {
-        this.npwz = npwz;
     }
 
     public Employee getEmployee() {
