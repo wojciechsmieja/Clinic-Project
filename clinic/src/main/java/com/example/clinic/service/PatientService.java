@@ -3,6 +3,7 @@ package com.example.clinic.service;
 import com.example.clinic.entity.Patient;
 import com.example.clinic.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -14,6 +15,14 @@ public class PatientService {
     public PatientService(PatientRepository repository) {
         this.repository = repository;
     }
+
+    public Patient savePatient(Patient patient){
+        return repository.save(patient);
+    }
+    public void deletePatient(Long id) {
+        repository.deleteById(id);
+    }
+
     public List<Patient> getAllPatients(){
 
     return repository.findAll();

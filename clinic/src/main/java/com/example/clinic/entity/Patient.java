@@ -1,6 +1,7 @@
 package com.example.clinic.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -12,18 +13,28 @@ public class Patient {
     @Column(name="id_pac",nullable = false)
     private Long id;
 
-    @Column(name="imie",nullable = false, length = 32)
+    @NotBlank
+    @Size(max=32)
+    @Column(name="imie",nullable = false)
     private String name;
 
-    @Column(name="nazwisko", nullable=false, length = 32)
+    @NotBlank
+    @Size(max=32)
+    @Column(name="nazwisko", nullable=false)
     private String surname;
 
+    @NotBlank
+    @Pattern(regexp="\\d{11}")
     @Column(nullable=false, length = 11)
     private String pesel;
 
+    @NotNull
+    @Past(message = "Date of birth cannot be from future")
     @Column(name="data_ur", nullable = false)
     private LocalDate dateOfBirth;
 
+    @Email
+    @Size(max=32)
     @Column(name="email", length = 32)
     private String email;
 
