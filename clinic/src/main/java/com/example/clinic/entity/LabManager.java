@@ -1,5 +1,6 @@
 package com.example.clinic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,14 +14,16 @@ public class LabManager {
     private String imie;
     @Column(name="nazwisko")
     private String surname;
-    @Column(name="id_prac")
-    private Long idPrac;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name="id_prac", nullable=false)
+    private Employee employee;
 
-    public LabManager(Long id, String imie, String surname, Long idPrac) {
-        this.id = id;
+    public LabManager(String imie, String surname, Employee idPrac) {
+
         this.imie = imie;
         this.surname = surname;
-        this.idPrac = idPrac;
+        this.employee = idPrac;
     }
 
     public LabManager() {}
@@ -49,11 +52,11 @@ public class LabManager {
         this.surname = surname;
     }
 
-    public Long getIdPrac() {
-        return idPrac;
+    public Employee getIdPrac() {
+        return employee;
     }
 
-    public void setIdPrac(Long idPrac) {
-        this.idPrac = idPrac;
+    public void setIdPrac(Employee idPrac) {
+        this.employee = idPrac;
     }
 }

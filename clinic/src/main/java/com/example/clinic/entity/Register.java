@@ -24,6 +24,14 @@ public class Register {
 
     public Register() {}
 
+    public Register(String name, String surname, Employee employee) {
+
+        this.name = name;
+        this.surname = surname;
+        this.employee = employee;
+
+    }
+
     public Long getId() {
         return id_rej;
     }

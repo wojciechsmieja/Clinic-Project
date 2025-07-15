@@ -31,7 +31,7 @@ public class Employee {
     @Column(nullable = false)
     private boolean admin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_lek")
     @JsonIgnore
     private Doctor doctor;

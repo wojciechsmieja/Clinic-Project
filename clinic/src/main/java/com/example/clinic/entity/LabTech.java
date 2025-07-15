@@ -23,8 +23,8 @@ public class LabTech {
     private Employee employee;
 
     public LabTech() {}
-    public LabTech(Long id, String name, String surname, Employee employee) {
-        this.id = id;
+    public LabTech( String name, String surname, Employee employee) {
+
         this.name = name;
         this.surname = surname;
         this.employee = employee;

@@ -1,7 +1,10 @@
 package com.example.clinic.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -11,7 +14,9 @@ public class Worker {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_prac")
-    private Integer id;
+    private Long id;
+    @NotNull
+    @Size(max=32)
     @Column
     private String username;
     @Column
@@ -19,23 +24,23 @@ public class Worker {
     @Column
     private String pesel;
     @Column
-    private Date data_ur;
+    private LocalDate data_ur;
     @Column
     private String status;
     @Column
-    private Integer id_lek;
+    private Long id_lek;
     @Column
-    private Integer id_rej;
+    private Long id_rej;
     @Column
-    private Integer id_lab;
+    private Long id_lab;
     @Column
-    private Integer id_klab;
+    private Long id_klab;
     @Column
     private Boolean admin;
 
     public Worker(){}
 
-    public Worker(String password, Integer id, String username, String pesel, Date data_ur, String status, Integer id_lek, Integer id_rej, Integer id_lab, Integer id_klab, Boolean admin) {
+    public Worker(String password, Long id, String username, String pesel, LocalDate data_ur, String status, Long id_lek, Long id_rej, Long id_lab, Long id_klab, Boolean admin) {
         this.password = password;
         this.id = id;
         this.username = username;
@@ -50,7 +55,7 @@ public class Worker {
     }
 
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -66,7 +71,7 @@ public class Worker {
         return pesel;
     }
 
-    public Date getData_ur() {
+    public LocalDate getData_ur() {
         return data_ur;
     }
 
@@ -74,19 +79,19 @@ public class Worker {
         return status;
     }
 
-    public Integer getId_lek() {
+    public Long getId_lek() {
         return id_lek;
     }
 
-    public Integer getId_rej() {
+    public Long getId_rej() {
         return id_rej;
     }
 
-    public Integer getId_lab() {
+    public Long getId_lab() {
         return id_lab;
     }
 
-    public Integer getId_klab() {
+    public Long getId_klab() {
         return id_klab;
     }
 
@@ -94,7 +99,7 @@ public class Worker {
         return admin;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -110,7 +115,7 @@ public class Worker {
         this.pesel = pesel;
     }
 
-    public void setData_ur(Date data_ur) {
+    public void setData_ur(LocalDate data_ur) {
         this.data_ur = data_ur;
     }
 
@@ -118,19 +123,19 @@ public class Worker {
         this.status = status;
     }
 
-    public void setId_rej(Integer id_rej) {
+    public void setId_rej(Long id_rej) {
         this.id_rej = id_rej;
     }
 
-    public void setId_lek(Integer id_lek) {
+    public void setId_lek(Long id_lek) {
         this.id_lek = id_lek;
     }
 
-    public void setId_lab(Integer id_lab) {
+    public void setId_lab(Long id_lab) {
         this.id_lab = id_lab;
     }
 
-    public void setId_klab(Integer id_klab) {
+    public void setId_klab(Long id_klab) {
         this.id_klab = id_klab;
     }
 

@@ -21,15 +21,14 @@ public class Doctor {
     @Column(nullable=false, length = 7)
     private String npwz;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(/*mappedBy = "doctor",*/ fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name="id_prac", nullable=false)
     private Employee employee;
 
     public Doctor() {  }
 
-    public Doctor(Long id, String name, String npwz ,String surname, Employee employee) {
-        this.id = id;
+    public Doctor( String name, String npwz ,String surname, Employee employee) {
         this.name = name;
         this.surname = surname;
         this.npwz = npwz;
