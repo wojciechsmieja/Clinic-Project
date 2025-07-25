@@ -64,6 +64,9 @@ public class EmployeeService {
                 LabManager kierownik = new LabManager(dto.name(),dto.surname(),saved);
                 labManagerRepository.save(kierownik);
             }
+            case "admin" -> {
+                System.out.println("dodano admin");
+            }
             default -> throw new RuntimeException("Nieznana rola: " + dto.rola());
         }
     }
