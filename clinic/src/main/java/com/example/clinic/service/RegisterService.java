@@ -16,6 +16,10 @@ public class RegisterService {
         this.repository = repository;
     }
 
+    public Register saveRegister(Register register) {
+        return repository.save(register);
+    }
+
     public List<Register> getAllRegisters(){
         return repository.findAll();
     }

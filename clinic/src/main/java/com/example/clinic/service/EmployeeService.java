@@ -1,5 +1,6 @@
 package com.example.clinic.service;
 
+import com.example.clinic.dto.EmployeeRequest;
 import com.example.clinic.dto.NewWorkerRequest;
 import com.example.clinic.entity.*;
 import com.example.clinic.repository.*;
@@ -32,45 +33,39 @@ public class EmployeeService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Transactional
-    public void addEmployee(NewWorkerRequest dto) {
+    public void addEmployee(EmployeeRequest dto) {
         Employee employee = new Employee();
-        employee.setUsername(dto.username);
-        employee.setPassword(passwordEncoder.encode(dto.password));
-        employee.setPesel(dto.pesel);
-        employee.setData_ur(dto.data_ur);
-        employee.setStatus(dto.status);
-        employee.setAdmin(dto.admin);
-
+        employee.setUsername(dto.username());
+        employee.setPassword(passwordEncoder.encode(dto.password()));
+        employee.setPesel(dto.pesel());
+        employee.setData_ur(dto.data_ur());
+        employee.setStatus(dto.status());
+        employee.setAdmin(dto.admin());
+        employee.setRola(dto.rola());
         // Zapisz pracownika i pobierz ID
         Employee saved = employeeRepository.save(employee);
 
-        String role = dto.rola.toLowerCase();
+        String role = dto.rola().toLowerCase();
 
         switch (role) {
             case "lekarz" -> {
-                Doctor doctor = new Doctor(dto.imie, dto.npwz, dto.nazwisko, saved); // musi mieć setIdLek lub setWorkerId
+                Doctor doctor = new Doctor(dto.name(), dto.npwz(), dto.surname(), saved); // musi mieć setIdLek lub setWorkerId
                 doctorRepository.save(doctor);
-                saved.setDoctor(doctor);
             }
             case "rejestrator" -> {
-                Register rejestrator = new Register(dto.imie,dto.nazwisko,saved);
+                Register rejestrator = new Register(dto.name(),dto.surname(),saved);
                 registerRepository.save(rejestrator);
-                saved.setRegister(rejestrator);
             }
             case "laborant" -> {
-                LabTech laborant = new LabTech(dto.imie,dto.nazwisko,saved);
+                LabTech laborant = new LabTech(dto.name(),dto.surname(),saved);
                 labTechRepository.save(laborant);
-                saved.setLabTech(laborant);
             }
             case "kierownik" -> {
-                LabManager kierownik = new LabManager(dto.imie,dto.nazwisko,saved);
+                LabManager kierownik = new LabManager(dto.name(),dto.surname(),saved);
                 labManagerRepository.save(kierownik);
-                saved.setLabManager(kierownik);
             }
-            default -> throw new RuntimeException("Nieznana rola: " + dto.rola);
+            default -> throw new RuntimeException("Nieznana rola: " + dto.rola());
         }
-
-        employeeRepository.save(saved); // aktualizacja relacji po przypisaniu id roli
     }
 
 

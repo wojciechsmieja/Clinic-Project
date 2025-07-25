@@ -61,7 +61,7 @@ function VisitForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ width: '40%', margin:'auto' }}>
       <h2>Ustal nową wizytę</h2>
 
       <label>Opis:</label><br />

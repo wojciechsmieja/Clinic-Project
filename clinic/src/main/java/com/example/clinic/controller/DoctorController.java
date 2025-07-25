@@ -2,10 +2,7 @@ package com.example.clinic.controller;
 
 import com.example.clinic.entity.Doctor;
 import com.example.clinic.service.DoctorService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,4 +20,10 @@ public class DoctorController {
     public List<Doctor> getAllDoctors(){
         return service.getAllDoctor();
     }
+    @PostMapping
+    public Doctor addDoctor(@RequestBody Doctor doctor) {
+        return service.saveDoctor(doctor);
+    }
+
+
 }

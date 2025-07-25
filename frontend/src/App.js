@@ -5,7 +5,7 @@ import PatientList from './components/PatientList';
 import Login from './components/Login';
 import VisitForm from './components/VisitForm';
 import AdminPanel from './components/AdminPanel';
-//import './App.css';
+import './App.css';
 
 function App() {
   return (

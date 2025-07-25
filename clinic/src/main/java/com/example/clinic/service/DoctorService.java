@@ -15,6 +15,10 @@ public class DoctorService {
         this.repository = repository;
     }
 
+    public Doctor saveDoctor(Doctor doctor) {
+        return repository.save(doctor);
+    }
+
     public List<Doctor> getAllDoctor(){
         return repository.findAll();
     }

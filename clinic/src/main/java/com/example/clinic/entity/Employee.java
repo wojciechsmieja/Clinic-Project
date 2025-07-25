@@ -28,43 +28,24 @@ public class Employee {
     @Column(length = 16,nullable = false)
     private String status;
 
+    @Column(length = 30, nullable = false)
+    private String rola;
+
     @Column(nullable = false)
     private boolean admin;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_lek")
-    @JsonIgnore
-    private Doctor doctor;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_rej")
-    @JsonIgnore
-    private Register register;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_lab")
-    @JsonIgnore
-    private LabTech labTech;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id_klab")
-    @JsonIgnore
-    private LabManager labManager;
 
     public Employee() {}
 
-    public Employee(Long id_prac, String username, String pesel, String password, LocalDate data_ur, String status, boolean admin, Doctor doctor, Register register, LabTech labTech, LabManager labManager) {
+    public Employee(Long id_prac, String username, String pesel, String password, LocalDate data_ur, String status, boolean admin, String rola) {
         this.id_prac = id_prac;
         this.username = username;
         this.pesel = pesel;
         this.password = password;
         this.data_ur = data_ur;
-        this.status = status;
+        this.rola = rola;
         this.admin = admin;
-        this.doctor = doctor;
-        this.register = register;
-        this.labTech = labTech;
-        this.labManager = labManager;
     }
 
     public Long getId_prac() {
@@ -115,6 +96,14 @@ public class Employee {
         this.pesel = pesel;
     }
 
+    public String getRola() {
+        return rola;
+    }
+
+    public void setRola(String rola) {
+        this.rola = rola;
+    }
+
     public boolean isAdmin() {
         return admin;
     }
@@ -123,35 +112,4 @@ public class Employee {
         this.admin = admin;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
-    public Register getRegister() {
-        return register;
-    }
-
-    public void setRegister(Register register) {
-        this.register = register;
-    }
-
-    public LabTech getLabTech() {
-        return labTech;
-    }
-
-    public void setLabTech(LabTech labTech) {
-        this.labTech = labTech;
-    }
-
-    public LabManager getLabManager() {
-        return labManager;
-    }
-
-    public void setLabManager(LabManager labManager) {
-        this.labManager = labManager;
-    }
 }
