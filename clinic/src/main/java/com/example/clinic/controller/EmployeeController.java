@@ -5,6 +5,7 @@ import com.example.clinic.entity.Doctor;
 import com.example.clinic.service.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.example.clinic.entity.Employee;
 import com.example.clinic.service.EmployeeService;
@@ -19,11 +20,18 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final DoctorService doctorService;
+    //private final PasswordEncoder passwordEncoder;
 
-    public EmployeeController(EmployeeService employeeService, DoctorService doctorService) {
+    public EmployeeController(EmployeeService employeeService, DoctorService doctorService/*, PasswordEncoder passwordEncoder*/) {
         this.employeeService = employeeService;
         this.doctorService = doctorService;
+        //this.passwordEncoder = passwordEncoder;
     }
+/*    @GetMapping("/hash/{password}")
+    public String hashPassword(@PathVariable String password){
+
+        return passwordEncoder.encode(password);
+    }*/
 
     @GetMapping
     public List<Employee> getAllEmployees() {
@@ -46,6 +54,7 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd: " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {

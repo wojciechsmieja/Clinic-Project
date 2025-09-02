@@ -41,7 +41,7 @@ const AdminPanel = () => {
 
 
     try {
-      const response = await fetch('http://localhost:8080/api/employees', {
+      const response = await fetch('/api/employees', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(EmployeePayload)

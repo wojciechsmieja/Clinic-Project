@@ -5,6 +5,7 @@ import com.example.clinic.repository.PatientRepository;
 import com.example.clinic.service.PatientService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,14 +21,17 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    @PreAuthorize("hasRole('REJESTRATOR')")
     @GetMapping
     public List<Patient> getAllPatients(){
         return patientService.getAllPatients();
     }
+    @PreAuthorize("hasRole('REJESTRATOR')")
     @PostMapping
     public Patient addPatient(@RequestBody @Valid Patient patient) {
         return patientService.savePatient(patient);
     }
+    @PreAuthorize("hasRole('REJESTRATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         patientService.deletePatient(id);

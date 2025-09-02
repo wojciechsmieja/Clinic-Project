@@ -1,29 +1,55 @@
 import React, { useEffect, useState } from 'react';
+import axiosInstance from './axiosInstance'
 
 function VisitForm() {
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPatients, setFilteredPatients] = useState([]);
   const [form, setForm] = useState({
     opis: '',
     data_wiz: '',
     czas_trwania: '00:30:00',
     id_lek: '',
     id_pac: '',
-    id_rej: 1, // możesz ustawić dynamicznie, np. z localStorage albo hardcoded na razie
+    id_rej: 2, // możesz ustawić dynamicznie, np. z localStorage albo hardcoded na razie
     status: 'umówiona',
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/doctors')
-      .then(res => res.json())
-      .then(setDoctors)
-      .catch(err => console.error('Błąd pobierania lekarzy:', err));
+    axiosInstance('/doctors')
+      .then(response => {
+        console.log("Odpowidz z API", response.data);
+        setDoctors(response.data);  
+      })
+      .catch(error => {
+        console.error('Błąd pobierania lekarzy:');
+        alert("Coś poszło nie tak podczas pobierania listy lekarzy :(");
+            });
 
-    fetch('http://localhost:8080/api/patients')
-      .then(res => res.json())
-      .then(setPatients)
-      .catch(err => console.error('Błąd pobierania pacjentów:', err));
+      axiosInstance('/patients')
+          .then(response=>{
+              console.log("Odpowidz z API", response.data);
+              setPatients(response.data);})
+          .catch(error=>{
+              console.error("Błąd podczas pobierania listy pacjentów");
+              alert("Coś poszło nie tak podczas pobierania listy pacjentów :(");
+          });
   }, []);
+
+  useEffect(()=>{
+    if (searchQuery.trim()===''){
+      setFilteredPatients([]);
+    }else{
+      const q = searchQuery.toLowerCase();
+      setFilteredPatients(
+        patients.filter(
+          (p)=>
+            p.name.toLowerCase().includes(q) || p.surname.toLowerCase().includes(q)
+        )
+      );
+    }
+  }, [searchQuery, patients]);
 
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -31,19 +57,15 @@ function VisitForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form data being sent:', form); // Add this line
-    fetch('http://localhost:8080/api/visits', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Błąd zapisu wizyty');
-        return res.json();
-      })
-      .then((data) => {
-        alert('Wizyta zapisana!');
-        console.log(data);
+    if (!form.id_pac){
+      alert("Musisz wybrać pacjenta!");
+      return;
+    }
+    console.log('Wysłane dane z formularza: ', form); 
+    axiosInstance.post('/visits', form)
+      .then(response=>{
+        alert("Wizyta zapisana");
+        console.log(response.data);
         setForm({
           opis: '',
           data_wiz: '',
@@ -53,6 +75,7 @@ function VisitForm() {
           id_rej: 1,
           status: 'umówiona',
         });
+        setSearchQuery('');
       })
       .catch(err => {
         console.error(err);
@@ -60,8 +83,14 @@ function VisitForm() {
       });
   };
 
+  const handleSelectPatient = (pac) => {
+    setForm(prev=>({...prev, id_pac:pac.id}));
+    setSearchQuery(`${pac.name} ${pac.surname}`); //write selected patient to field
+    setFilteredPatients([]); // hide list after selecting
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={{ width: '40%', margin:'auto' }}>
+    <form onSubmit={handleSubmit} style={{ width: '80%', margin:'auto' }}>
       <h2>Ustal nową wizytę</h2>
 
       <label>Opis:</label><br />
@@ -82,14 +111,18 @@ function VisitForm() {
         </select><br /><br />
 
        <label>Pacjent:</label><br />
-       <select name="id_pac" value={form.id_pac} onChange={handleChange} required>
-         <option value="">-- Wybierz pacjenta --</option>
-         {patients.map(pac => (
-           <option key={pac.id} value={pac.id}>
-             {pac.name} {pac.surname}
-           </option>
-         ))}
-       </select>
+       <input type='text' placeholder='Wyszukaj pacjenta po imieniu/nazwisku'
+       value ={searchQuery}
+       onChange={(e)=>setSearchQuery(e.target.value)}/>
+       {filteredPatients.length >0 && (
+        <ul style={{ border: '1px solid #ccc', maxHeight: '150px', overflowY: 'auto', padding: '5px' }}>
+          {filteredPatients.map(pac=>(
+            <li key = {pac.id} onClick={() => handleSelectPatient(pac)}
+            style={{cursor:'pointer', padding:'5px'}}>Imię: {pac.name}<br/> Nazwisko: {pac.surname}<br/> Pesel: {pac.pesel}
+            </li>
+          ))}
+        </ul>
+       )}      
        <br /><br />
 
       <button type="submit">Zapisz wizytę</button>

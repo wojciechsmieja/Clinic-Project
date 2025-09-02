@@ -1,0 +1,16 @@
+.login-form{
+    margin: auto;
+    display: flex;
+    width: 60vw;
+    background-color: var(--surface-1);
+    border: solid 2px var(--border-1);
+    border-radius: 10px;
+    padding: 2rem;
+}
+.login-form input{
+    font-size: 20px;
+    font-weight: 600;
+}
+h1{
+    margin-bottom: 10rem;
+}

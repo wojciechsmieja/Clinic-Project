@@ -1,7 +1,6 @@
 package com.example.clinic.service;
 
 import com.example.clinic.dto.EmployeeRequest;
-import com.example.clinic.dto.NewWorkerRequest;
 import com.example.clinic.entity.*;
 import com.example.clinic.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;

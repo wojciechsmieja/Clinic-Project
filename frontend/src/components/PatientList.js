@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import axios from 'axios';
+import axiosInstance from './axiosInstance'
 
 function PatientList(){
     const [patients, setPatients] = useState([]);
@@ -15,11 +17,14 @@ function PatientList(){
 
     //taking data [json] fron backend
     useEffect(()=>{
-        fetch('/api/patients')
-            .then(response=>response.json())
-            .then(data=>{
-                console.log("Odpowidz z API", data);
-                setPatients(data);});
+        axiosInstance('/patients')
+            .then(response=>{
+                console.log("Odpowidz z API", response.data);
+                setPatients(response.data);})
+            .catch(error=>{
+                console.error("Błąd podczas pobierania listy pacjentów");
+                alert("Coś poszło nie tak podczas pobierania listy pacjentów :(");
+            });
     }, []);
 
     const handleInputChange = (e) =>{
@@ -44,33 +49,30 @@ function PatientList(){
             return;
         }        
 
-        fetch('/api/patients', {
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(res=>res.json())
-            .then(newPatient => {
-                setPatients(prev => [...prev, newPatient]);
+        axiosInstance.post('/patients', formData)
+            .then(resonse =>{
+                setPatients(prev => [...prev, resonse.data]);
+
                 setFormData({
                     name:'',
-                    surname: '',
-                    pesel: '',
-                    dateOfBirth: '',
+                    surname:'',
+                    pesel:'',
+                    dateOfBirth:'',
                     email:''
                 });
+            })
+            .catch(error => {
+                console.error("Błąd podczas dodawania pacjenta",error);
+                alert("Błąd podczas dodawania pacjenta :(");
             });
-    };
+        }; 
+        
     //delete
     function handleDelete(id){
         if (window.confirm("Czy na pewno chcesz usunąć tego pacjenta?")) {
-        fetch(`/api/patients/${id}`, {
-            method: 'DELETE'
-        })
+        axiosInstance.delete(`/patients/${id}`)
         .then(response => {
-            if (response.ok) {
+            if (response.status ===204 || response.status ===200) {
                 setPatients(prev => prev.filter(p => p.id !== id));
                 if (selectedPatient && selectedPatient.id === id) {
                     setSelectedPatient(null);
@@ -78,8 +80,12 @@ function PatientList(){
             } else {
                 alert("Błąd przy usuwaniu pacjenta.");
             }
+        })
+        .catch(error => {
+            console.error("Błąd przy usuwaniu pacjenta",error);
+            alert("Błąd przy usuwaniu pacjenta");
         });
-    }
+        }
     }
 
     return (

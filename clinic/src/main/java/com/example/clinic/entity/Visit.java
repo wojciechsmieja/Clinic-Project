@@ -1,7 +1,12 @@
 package com.example.clinic.entity;
 
+import com.example.clinic.utilities.DurationToIntervalStringConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import jakarta.persistence.Converter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,6 +32,7 @@ public class Visit {
     private LocalDateTime date;
 
     @Column(name = "czas_trwania", nullable = false)
+    @JdbcTypeCode(SqlTypes.INTERVAL_SECOND)
     private Duration duration;
 
     @JsonIgnore
