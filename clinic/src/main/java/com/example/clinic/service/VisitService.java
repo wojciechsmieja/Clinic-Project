@@ -88,6 +88,10 @@ public class VisitService {
         return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds);
     }
 
+    public void deleteVisit(Integer id){
+        visitRepository.deleteById(id);
+    }
+
     /**
      * Fetches all visits from the database and converts them to a list of VisitDTOs.
      * This is the method that should be used by your VisitController.

@@ -38,6 +38,10 @@ public class VisitController {
         return visitService.getVisitForCurrentUser();
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVisit(@PathVariable Integer id){
+        visitService.deleteVisit(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

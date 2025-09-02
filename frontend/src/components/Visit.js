@@ -15,6 +15,7 @@ function Visit(){
 
     const [visits, setVisit] = useState([]);
 
+
     useEffect(()=>{
         axiosInstance('visits')
             .then(response=>{
@@ -26,14 +27,33 @@ function Visit(){
                 alert("Błąd podczas pobierania wizyt");
             });
     },[]);
+
+    function handleDeleteClick(id) {
+        console.log("id wizyty: ", id);
+        if(window.confirm("Czy na pewno chcesz usunąc wizytę?")){
+            axiosInstance.delete(`/visits/${id}`)
+            .then(response=>{
+                if(response.status ===204 || response.status === 200){
+                    setVisit(prev => prev.filter(v=>v.id_wiz!==id));
+                    alert("Wizyta została usunięta");
+                }else{
+                    alert("Błąd podczas usuwania wizyty - bad response");
+                }
+            })
+            .catch(err=>{
+                console.log("Błąd przy usuwaniu wizyty", err);
+                alert("Error: Błąd podczas usuwania wizyty");
+            });
+        }
+    }
     return(
         <div>
             <h2>Twoje wizyty</h2>
             <ul>
                 {visits.map(visit=>(
-                    <li key={visit.id}>
+                    <li key={visit.id_wiz}>
                         <p>Opis: {visit.opis}</p>
-                        <p>Dodaj diagnozę <input type='text' value={visit.diagnoza}></input></p>
+                        <p>Dodaj diagnozę <input type='text' value={visit.diagnoza || ''}></input></p>
                         <p>Status: {visit.status}</p>
                         <p>Data: {new Date(visit.data_wiz).toLocaleDateString('pl-PL',{
                               year: 'numeric',
@@ -45,6 +65,7 @@ function Visit(){
                         })}</p>
                         <p>Czas trwania: {formatDuration(visit.czas_trwania)}</p>
                         <p>Pacjent: {visit.patient ? `${visit.patient.name} ${visit.patient.surname}` : 'Brak danych'}</p>
+                        <button onClick={()=>handleDeleteClick(visit.id_wiz)} className="delete-button">Anuluj wizytę</button>
                     </li>
                 ))}
             </ul>
