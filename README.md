@@ -1,5 +1,6 @@
-This is a university group project - web application called 'Clinic' and serve as a system for registrators and doctors organise patients visits and medical examinations.
-
+###This is a university group project - web application called 'Clinic' and serve as a system for registrators and doctors organise patients visits and medical examinations.
+##teste
+#test
 To connect to the PostgreSQL database, make sure PostgreSQL is installed on your computer, and add the following lines to the /resources/application.properties file:
 spring.datasource.url=jdbc:postgresql://localhost:5432/nameOfDatabase
 spring.datasource.username=postgres
