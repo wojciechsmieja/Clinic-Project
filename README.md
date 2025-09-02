@@ -1,4 +1,4 @@
-# This is a university group project - web application called 'Clinic' and serve as a system for registrators and doctors organise patients visits and medical examinations.
+# This is a university group project - web application called 'Clinic', which serve as a system for registrators and doctors to organise patient's visits and medical examinations.
 
 ## Here are steps to run this project on your computer:
 1. To connect to the PostgreSQL database, make sure PostgreSQL is installed on your computer, and add the following lines to the **/resources/application.properties** file:
