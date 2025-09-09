@@ -59,6 +59,10 @@ public class Visit {
     @JsonManagedReference
     private List<PhysicalMedicalExam> physicalExams;
 
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<LaboratoryExamination> labExams;
+
     public Visit(Integer id, String description, String diagnosis, String status, LocalDateTime date, Duration duration, Patient patient, Register register, Doctor doctor, LocalDateTime cancellationTime) {
         this.id = id;
         this.description = description;
@@ -158,5 +162,11 @@ public class Visit {
     }
     public void setPhysicalExams(List<PhysicalMedicalExam> physicalExams) {
         this.physicalExams = physicalExams;
+    }
+    public List<LaboratoryExamination> getLabExams() {
+        return labExams;
+    }
+    public void setLabExams(List<LaboratoryExamination> labExams) {
+        this.labExams = labExams;
     }
 }

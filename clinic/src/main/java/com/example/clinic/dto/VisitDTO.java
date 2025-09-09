@@ -14,6 +14,7 @@ public class VisitDTO {
     private Long id_rej;
     private Long id_pac;
     private List<PhysicalExamDTO> physicalExams;
+    private List<LabExamDTO> labExams;
 
     // Constructors
     public VisitDTO() {}
@@ -52,6 +53,11 @@ public class VisitDTO {
     public List<PhysicalExamDTO> getPhysicalExams() { return physicalExams; }
     public void setPhysicalExams(List<PhysicalExamDTO> physicalExams) {
         this.physicalExams = physicalExams;
+    }
+
+    public List<LabExamDTO> getLabExams() { return labExams; }
+    public void setLabExams(List<LabExamDTO> labExams) {
+        this.labExams = labExams;
     }
 
 }

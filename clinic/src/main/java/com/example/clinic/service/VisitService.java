@@ -1,9 +1,6 @@
 package com.example.clinic.service;
 
-import com.example.clinic.dto.PatientDTO;
-import com.example.clinic.dto.PhysicalExamDTO;
-import com.example.clinic.dto.PhysicalExamRequest;
-import com.example.clinic.dto.VisitDTO;
+import com.example.clinic.dto.*;
 import com.example.clinic.entity.*;
 import com.example.clinic.repository.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,6 +25,7 @@ public class VisitService {
     private final EmployeeRepository employeeRepository;
     private final PhysicalMedicalExamRepository physicalMedicalExamRepository;
     private final CodeRepository codeRepository;
+    private final LaboratoryExaminationRepository laboratoryExaminationRepository;
 
     public VisitService(VisitRepository visitRepository,
                         DoctorRepository doctorRepository,
@@ -34,7 +33,8 @@ public class VisitService {
                         RegisterRepository registerRepository,
                         EmployeeRepository employeeRepository,
                         PhysicalMedicalExamRepository physicalMedicalExamRepository,
-                        CodeRepository codeRepository) {
+                        CodeRepository codeRepository,
+                        LaboratoryExaminationRepository laboratoryExaminationRepository) {
         this.visitRepository = visitRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
@@ -42,6 +42,7 @@ public class VisitService {
         this.employeeRepository = employeeRepository;
         this.physicalMedicalExamRepository = physicalMedicalExamRepository;
         this.codeRepository = codeRepository;
+        this.laboratoryExaminationRepository = laboratoryExaminationRepository;
     }
 
     public List<VisitDTO> getVisitForCurrentUser(){
@@ -142,7 +143,7 @@ public class VisitService {
             dto.setPatient(patientDto); // Corrected setter name
         }
 
-        if(visit.getPhysicalExams() != null && !visit.getPhysicalExams().isEmpty()){
+        if(visit.getPhysicalExams() != null && !visit.getPhysicalExams().isEmpty()) {
             List<PhysicalExamDTO> examDTOs = visit.getPhysicalExams().stream()
                     .map(exam -> new PhysicalExamDTO(
                             exam.getCode().getCode(),
@@ -151,6 +152,17 @@ public class VisitService {
                     ))
                     .collect(Collectors.toList());
             dto.setPhysicalExams(examDTOs);
+        }
+        if(visit.getLabExams() != null && !visit.getLabExams().isEmpty()){
+            List<LabExamDTO> examLabDTOs = visit.getLabExams().stream()
+                    .map(exam -> new LabExamDTO(
+                            exam.getCode().getCode(),
+                            exam.getCode().getName(),
+                            exam.getDoctorNotes(),
+                            exam.getStatus()
+                    ))
+                    .collect(Collectors.toList());
+            dto.setLabExams(examLabDTOs);
         }
 
         return dto;
@@ -187,6 +199,21 @@ public class VisitService {
         newExam.setResult(request.getResult());
 
         return physicalMedicalExamRepository.save(newExam);
+    }
+
+    public LaboratoryExamination addLaboratoryExamToVisit( Integer id, LabExamRequest request){
+        Visit visit = visitRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Visit not found with id: "+id));
+        Code code = codeRepository.findById(request.getCode())
+                .orElseThrow(()->new RuntimeException("Code not found with id: "+request.getCode()));
+        LaboratoryExamination newExam = new LaboratoryExamination();
+        newExam.setVisit(visit);
+        newExam.setCode(code);
+        newExam.setDoctorNotes(request.getDoctorNotes());
+        newExam.setOrderDate(LocalDate.now());
+        newExam.setStatus("Zlecone");
+
+        return laboratoryExaminationRepository.save(newExam);
     }
 
 }

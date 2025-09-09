@@ -1,6 +1,8 @@
 package com.example.clinic.controller;
 
+import com.example.clinic.dto.LabExamRequest;
 import com.example.clinic.dto.VisitDTO;
+import com.example.clinic.entity.LaboratoryExamination;
 import com.example.clinic.entity.Visit;
 import com.example.clinic.service.VisitService;
 import org.springframework.http.HttpStatus;
@@ -74,6 +76,16 @@ public class VisitController {
             PhysicalMedicalExam newExam = visitService.addPhysicalExamToVisit(visitId, request);
             return ResponseEntity.status(HttpStatus.CREATED).body(newExam);
         }catch(RuntimeException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{visitId}/lab-exams")
+    public ResponseEntity<LaboratoryExamination> addLaboratoryExamForVisit (@PathVariable Integer visitId, @RequestBody LabExamRequest request){
+        try{
+            LaboratoryExamination newExam = visitService.addLaboratoryExamToVisit(visitId, request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newExam);
+        }catch (RuntimeException e){
             return ResponseEntity.notFound().build();
         }
     }

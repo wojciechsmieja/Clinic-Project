@@ -16,4 +16,8 @@ public class CodeService {
     public List<Code> getPhysicalExaminationCodes() {
         return codeRepository.findByType("F");
     }
+
+    public List<Code> getLaboratoryExaminationCodes() {
+        return codeRepository.findByType("L");
+    }
 }

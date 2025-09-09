@@ -2,6 +2,8 @@ import React, { useState,useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../components/axiosInstance'
 import PhysicalExamForm from '../components/PhysicalForm';
+import LabExamForm from '../components/labExamForm';
+import "./VisitDetails.css";
 
 function VisitDetails() {
     const {id} = useParams();    
@@ -15,7 +17,8 @@ function VisitDetails() {
         .then(response => {                   
           const visitData = response.data;                                
           setVisit(visitData);     
-          setDiagnosis(visitData.diagnosis || '');                                       
+          setDiagnosis(visitData.diagnosis || '');           
+          console.log(visitData.labExams)     ;                       
         })                                                                    
         .catch(error => {                                                     
           console.error("Błąd podczas pobierania szczegółów wizyty!", error); 
@@ -35,6 +38,7 @@ function VisitDetails() {
                 console.error("błąd podczas aktualizacji wizyty", error);
                 setMessage('Błąd aktualizacji wizyty. Spróbuj ponownie');
             });
+        
     }
 
     const handleEndVisit = () => {
@@ -119,8 +123,31 @@ function VisitDetails() {
                     </div>
                 )}
             </div>
-            <div className='physical-exam'>
-                <PhysicalExamForm visitId={id}/>
+            <div className='added-lab-exams'>
+                {visit.labExams && visit.labExams.length >0 &&(
+                    <div className='completed-exams'>
+                        <h2>Wykonane badania laboratoryjne</h2>
+                        <ul style={{listStyleType: 'none', padding: '0'}}>
+                            {visit.labExams.map((exam, index)=>(
+                            <li key={index} style={{background: '#f9f9f9', border: '1px solid #ddd', padding: '10px', marginBottom:'10px', borderRadius: '10px'}}>
+                                <strong>{exam.name}</strong>
+                                <span style={{ background: '#e0e0e0', padding: '2px 8px', borderRadius:'10px', fontSize: '12px' }}>
+                                    Status: {exam.status}
+                                </span>
+                                {exam.doctorNotes && <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>Uwagi: {exam.doctorNotes}</p>}
+                            </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+            <div className='add-exams'>
+                <div className='add-physical-exam'>
+                    <PhysicalExamForm visitId={id}/>
+                </div>
+                <div className='add-lab-exam'>
+                    <LabExamForm visitId={id}/>
+                </div>
             </div>
         </div>
     )

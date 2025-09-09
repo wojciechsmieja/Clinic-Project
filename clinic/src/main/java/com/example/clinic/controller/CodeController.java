@@ -26,4 +26,8 @@ public class CodeController {
         return codeService.getPhysicalExaminationCodes();
     }
 
+    @GetMapping("/laboratory")
+    public List<Code> getLaboratoryExaminationCodes() {
+        return codeService.getLaboratoryExaminationCodes();
+    }
 }

@@ -1,21 +1,21 @@
 import React, {useState, useEffect} from "react";
 import axiosInstance from "./axiosInstance";
 
-function PhysicalExamForm ({visitId}){
+function LabExamForm({visitId}){
     const [codes, setCodes] = useState([]);
     const [selectedCode, setSelectedCode] = useState('');
-    const [ result, setResult] = useState('');
+    const [doctorNotes, setDoctorNotes] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(()=>{
-        axiosInstance.get('codes/physical')
-            .then(response => {
+    useEffect(() =>{
+        axiosInstance.get("codes/laboratory")
+            .then(response=>{
                 setCodes(response.data);
             })
-            .catch(error => {
-                console.error("Błąd podczas poboru kodów fizykalnych", error);
-                setError('Nie udało się załadować słownika badań fizykalnych');
+            .catch(error =>{
+                console.error("Błąd podczas poboru kodów laboratoryjnych", error);
+                setError('Nie udało się załadować słownika badań laboratoryjnych');
             })
             .finally(()=>{
                 setLoading(false);
@@ -24,44 +24,43 @@ function PhysicalExamForm ({visitId}){
 
     const handleSubmit = (event) =>{
         event.preventDefault();
-        if(!selectedCode || !result){
-            alert('Proszę wybrać badanie i wpisać wynik');
+        if(!selectedCode){
+            alert("Proszę wybrać badanie");
             return;
         }
-        console.log('Dane do zapisu: ', {
+        console.log('Dane do zapisu (lab): ', {
             visitId:visitId,
             code: selectedCode,
-            result: result
+            doctorNotes: doctorNotes
         });
         const payload = {
             code: selectedCode,
-            result: result
-        };
-        axiosInstance.post(`visits/${visitId}/physical-exams`, payload)
+            doctorNotes: doctorNotes
+        }
+        axiosInstance.post(`visits/${visitId}/lab-exams`, payload)
             .then(response=>{
                 setSelectedCode('');
-                setResult('');
-                
+                setDoctorNotes('');
+                                
+            })        
+            .catch(err => {
+                console.error("Błąd podczas dodawania badania lab", err);
             })
-            .catch(err=>{
-                console.error("Błąd podczas dodawania badania", err);
-            })
-        
     }
 
     if(loading){
-        return <p>Ładowanie formularza badań</p>
-
+        return <p>Ładowanie formularza badań laboratoryjnych</p>
     }
+
     if(error){
         return <p>{error}</p>
     }
     return(
-        <div className='parent' style={{ marginTop: '30px', borderTop: '1px solid #ccc', paddingTop: '20px'}}>
-            <h3>Dodaj badanie fizykalne</h3>
+        <div style={{ marginTop: '30px', borderTop: '1px solid #ccc', paddingTop: '20px'}}>
+            <h3>Zleć badanie laboratoryjne</h3>
             <form onSubmit={handleSubmit}>
                 <div style={{marginBottom:'15px'}}>
-                    <label htmlFor="exam-code">Badanie</label>
+                    <label htmlFor="exam-code">Badania laboraotryjne</label>
                     <select id="exam-code"
                         value={selectedCode}
                         onChange={e=> setSelectedCode(e.target.value)}
@@ -76,20 +75,21 @@ function PhysicalExamForm ({visitId}){
                         </select>
                 </div>
                 <div>
-                    <label htmlFor="exam-result">Wynik</label>
+                    <label htmlFor="doctor-notes">Dodatkowe informacje</label>
                     <textarea
-                        id="exam-result"
-                        value={result}
-                        onChange={e=>setResult(e.target.value)}
+                        id="doctor-notes"
+                        value={doctorNotes}
+                        onChange={e=>setDoctorNotes(e.target.value)}
                         required
                         rows="4"
                         >
                         </textarea>
                 </div>
-                <button type="submit" style={{padding:'10px 15px'}}>Dodaj badanie</button>
+                <button type="submit" style={{padding:'10px 15px'}}>Zleć badanie</button>                
             </form>
         </div>
-    );
+    )
+
 }
 
-export default PhysicalExamForm;
+export default LabExamForm;
