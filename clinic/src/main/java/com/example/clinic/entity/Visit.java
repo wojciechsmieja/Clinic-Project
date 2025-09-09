@@ -10,6 +10,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="wizyta")
@@ -52,6 +54,10 @@ public class Visit {
 
     @Column(name = "czas_zak_anul")
     private LocalDateTime cancellationTime;
+
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<PhysicalMedicalExam> physicalExams;
 
     public Visit(Integer id, String description, String diagnosis, String status, LocalDateTime date, Duration duration, Patient patient, Register register, Doctor doctor, LocalDateTime cancellationTime) {
         this.id = id;
@@ -145,5 +151,12 @@ public class Visit {
 
     public void setCancellationTime(LocalDateTime cancellationTime) {
         this.cancellationTime = cancellationTime;
+    }
+
+    public List<PhysicalMedicalExam> getPhysicalExams() {
+        return physicalExams;
+    }
+    public void setPhysicalExams(List<PhysicalMedicalExam> physicalExams) {
+        this.physicalExams = physicalExams;
     }
 }

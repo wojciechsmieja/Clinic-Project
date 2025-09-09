@@ -1,5 +1,7 @@
 package com.example.clinic.dto;
 
+import java.util.List;
+
 public class VisitDTO {
     private Integer id_wiz; // Added visit ID
     private String opis;
@@ -11,6 +13,7 @@ public class VisitDTO {
     private PatientDTO patient;
     private Long id_rej;
     private Long id_pac;
+    private List<PhysicalExamDTO> physicalExams;
 
     // Constructors
     public VisitDTO() {}
@@ -45,4 +48,10 @@ public class VisitDTO {
 
     public Long getId_pac() { return id_pac; }
     public void setId_pac(Long id_pac) { this.id_pac = id_pac; }
+
+    public List<PhysicalExamDTO> getPhysicalExams() { return physicalExams; }
+    public void setPhysicalExams(List<PhysicalExamDTO> physicalExams) {
+        this.physicalExams = physicalExams;
+    }
+
 }

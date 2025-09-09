@@ -56,6 +56,20 @@ function VisitDetails() {
             });
     }
 
+    const handleExamAdded = (newExam) => {
+        setVisit(prevVisit =>{
+            const examDto={
+                code: newExam.code.code,
+                name:newExam.code.name,
+                result: newExam.result
+            };
+            return {
+            ...prevVisit,
+            physicalExams:[...PhysicalExamForm(prevVisit.physicalExams || []), examDto]
+            }
+        });
+    }
+
     if(!visit){
         return <div>Ładowanie danych wizyty...</div>
     }
@@ -89,6 +103,21 @@ function VisitDetails() {
                         </ul>
                     </form>
                 </div>
+            </div>
+            <div className='added-physical-exams'>
+                {visit.physicalExams && visit.physicalExams.length >0 &&(
+                    <div className='completed-exams'>
+                        <h2>Wykonane badania fizykalne</h2>
+                        <ul style={{listStyleType: 'none', padding: '0'}}>
+                            {visit.physicalExams.map((exam, index)=>(
+                            <li key={index} style={{background: '#f9f9f9', border: '1px solid #ddd', padding: '10px', marginBottom:'10px', borderRadius: '10px'}}>
+                                <strong>{exam.name}</strong>
+                                <p>Wynik: {exam.result}</p>
+                            </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
             <div className='physical-exam'>
                 <PhysicalExamForm visitId={id}/>

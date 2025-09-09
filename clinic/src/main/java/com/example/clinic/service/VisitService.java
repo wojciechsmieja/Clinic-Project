@@ -1,6 +1,7 @@
 package com.example.clinic.service;
 
 import com.example.clinic.dto.PatientDTO;
+import com.example.clinic.dto.PhysicalExamDTO;
 import com.example.clinic.dto.PhysicalExamRequest;
 import com.example.clinic.dto.VisitDTO;
 import com.example.clinic.entity.*;
@@ -139,6 +140,17 @@ public class VisitService {
         if (patientEntity != null) {
             PatientDTO patientDto = new PatientDTO(patientEntity.getName(), patientEntity.getSurname());
             dto.setPatient(patientDto); // Corrected setter name
+        }
+
+        if(visit.getPhysicalExams() != null && !visit.getPhysicalExams().isEmpty()){
+            List<PhysicalExamDTO> examDTOs = visit.getPhysicalExams().stream()
+                    .map(exam -> new PhysicalExamDTO(
+                            exam.getCode().getCode(),
+                            exam.getCode().getName(),
+                            exam.getResult()
+                    ))
+                    .collect(Collectors.toList());
+            dto.setPhysicalExams(examDTOs);
         }
 
         return dto;

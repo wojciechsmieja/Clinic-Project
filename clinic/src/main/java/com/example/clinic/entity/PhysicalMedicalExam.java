@@ -1,6 +1,7 @@
 package com.example.clinic.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import com.example.clinic.entity.Code;
 
@@ -13,6 +14,7 @@ public class PhysicalMedicalExam {
     @Column(name="wynik")
     private String result;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name="id_wiz")
     private Visit visit;
     @OneToOne
