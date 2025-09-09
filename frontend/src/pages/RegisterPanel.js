@@ -10,7 +10,7 @@ function RegisterPanel(){
                 <div style={{ flex: 1, marginRight: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }} className='patient-list-register'>
                     <PatientList/>
                 </div>
-                    <div style={{ flex: 1, marginLeft: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>                                                                 │
+                    <div style={{ flex: 1, marginLeft: '10px', padding: '20px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
                         <VisitForm />
                     </div>                 
             </div>

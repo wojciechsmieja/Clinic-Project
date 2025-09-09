@@ -2,6 +2,7 @@ package com.example.clinic.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -34,11 +35,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // endpoint logowania bez autoryzacji
-                        .requestMatchers("/doctor/**").hasRole("LEKARZ")
-                        .requestMatchers("/register/**").hasRole("REJESTRATOR")
-                        .requestMatchers("/patients**").hasRole("REJESTRATOR")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/**").permitAll() // endpoint logowania bez autoryzacji
+                        //DOCTORS
+                        .requestMatchers("/api/doctors/**").hasAnyRole("LEKARZ","REJESTRATOR")
+                        .requestMatchers("/api/visits/**").hasAnyRole("LEKARZ","REJESTRATOR")
+                        .requestMatchers("/api/register/**").hasRole("REJESTRATOR")
+                        .requestMatchers("/api/patients**").hasRole("REJESTRATOR")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

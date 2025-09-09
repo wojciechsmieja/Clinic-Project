@@ -8,6 +8,7 @@ import RegisterPanel from "./pages/RegisterPanel";
 import LabTechPanel from "./pages/LabTechPanel.js";
 import LabManagerPanel from "./pages/LabManagerPanel.js";
 import Navbar from "./components/navbar.js";
+import VisitDetails from './pages/VisitDetails.js';
 import './App.css';
 
 //component for handling redirects after logging in
@@ -68,6 +69,9 @@ function App() {
           }/>
           <Route path="/admin" element={
             <PrivateRoute allowedRoles={["ROLE_ADMIN"]}><AdminPanel/></PrivateRoute>
+          }/>
+          <Route path="/visit/:id" element={
+            <PrivateRoute allowedRoles={["ROLE_LEKARZ"]}><VisitDetails/></PrivateRoute>
           }/>
         </Routes>
       </main>

@@ -1,6 +1,7 @@
 package com.example.clinic.service;
 
 import com.example.clinic.dto.PatientDTO;
+import com.example.clinic.dto.PhysicalExamRequest;
 import com.example.clinic.dto.VisitDTO;
 import com.example.clinic.entity.*;
 import com.example.clinic.repository.*;
@@ -12,6 +13,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,17 +24,23 @@ public class VisitService {
     private final PatientRepository patientRepository;
     private final RegisterRepository registerRepository;
     private final EmployeeRepository employeeRepository;
+    private final PhysicalMedicalExamRepository physicalMedicalExamRepository;
+    private final CodeRepository codeRepository;
 
     public VisitService(VisitRepository visitRepository,
                         DoctorRepository doctorRepository,
                         PatientRepository patientRepository,
                         RegisterRepository registerRepository,
-                        EmployeeRepository employeeRepository) {
+                        EmployeeRepository employeeRepository,
+                        PhysicalMedicalExamRepository physicalMedicalExamRepository,
+                        CodeRepository codeRepository) {
         this.visitRepository = visitRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.registerRepository = registerRepository;
         this.employeeRepository = employeeRepository;
+        this.physicalMedicalExamRepository = physicalMedicalExamRepository;
+        this.codeRepository = codeRepository;
     }
 
     public List<VisitDTO> getVisitForCurrentUser(){
@@ -59,8 +68,9 @@ public class VisitService {
         visit.setDescription(visitDTO.getOpis());
         visit.setStatus(visitDTO.getStatus());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(visitDTO.getData_wiz(), formatter);
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        //LocalDateTime dateTime = LocalDateTime.parse(visitDTO.getData_wiz(), formatter);
+        LocalDateTime dateTime = LocalDateTime.parse(visitDTO.getData_wiz());
         visit.setDate(dateTime);
 
         Duration duration = parseDuration(visitDTO.getCzas_trwania());
@@ -73,6 +83,10 @@ public class VisitService {
         Register register = registerRepository.findById(visitDTO.getId_rej())
                 .orElseThrow(() -> new RuntimeException("Register not found with id: " + visitDTO.getId_rej()));
         visit.setRegister(register);
+
+        Patient patient = patientRepository.findById(visitDTO.getId_pac())
+                .orElseThrow(()-> new RuntimeException("Patient not found with id: "+visitDTO.getId_pac()));
+        visit.setPatient(patient);
 
         return visitRepository.save(visit);
     }
@@ -92,11 +106,7 @@ public class VisitService {
         visitRepository.deleteById(id);
     }
 
-    /**
-     * Fetches all visits from the database and converts them to a list of VisitDTOs.
-     * This is the method that should be used by your VisitController.
-     * @return List of VisitDTO objects.
-     */
+
     public List<VisitDTO> getAllVisits() {
         return visitRepository.findAll()
                 .stream()
@@ -104,11 +114,7 @@ public class VisitService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Helper method to convert a Visit entity to a VisitDTO.
-     * @param visit The Visit entity from the database.
-     * @return A VisitDTO object ready to be sent to the frontend.
-     */
+
     private VisitDTO convertToDto(Visit visit) {
         VisitDTO dto = new VisitDTO();
 
@@ -116,6 +122,7 @@ public class VisitService {
         dto.setId_wiz(visit.getId()); // Set the ID
         dto.setOpis(visit.getDescription());
         dto.setStatus(visit.getStatus());
+        dto.setDiagnosis(visit.getDiagnosis());
         dto.setData_wiz(visit.getDate().toString()); // Convert LocalDateTime to String
         dto.setCzas_trwania(visit.getDuration().toString()); // Convert Duration to String (e.g., "PT30M")
 
@@ -136,4 +143,38 @@ public class VisitService {
 
         return dto;
     }
+    public VisitDTO findVisitById(Integer id){
+        return visitRepository.findById(id)
+                .map(this::convertToDto)
+                .orElseThrow(()->new RuntimeException("Visit not found with id: "+id));
+    }
+
+    public VisitDTO updateVisit(Integer id, Map<String, Object> updates){
+        Visit visit = visitRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Visit not found with id: "+id));
+        if(updates.containsKey("diagnosis")){
+            visit.setDiagnosis((String) updates.get("diagnosis"));
+        }
+
+        if(updates.containsKey("status") && "Zakończona".equals(updates.get("status"))){
+            visit.setStatus("Zakończona");
+            visit.setCancellationTime(LocalDateTime.now());
+        }
+        Visit updatedVisit = visitRepository.save(visit);
+        return convertToDto(updatedVisit);
+    }
+
+    public PhysicalMedicalExam addPhysicalExamToVisit(Integer id, PhysicalExamRequest request){
+        Visit visit = visitRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Visit not found with id: "+id));
+        Code code = codeRepository.findById(request.getCode())
+                .orElseThrow(()->new RuntimeException("Code not found with id: "+request.getCode()));
+        PhysicalMedicalExam newExam = new PhysicalMedicalExam();
+        newExam.setVisit(visit);
+        newExam.setCode(code);
+        newExam.setResult(request.getResult());
+
+        return physicalMedicalExamRepository.save(newExam);
+    }
+
 }

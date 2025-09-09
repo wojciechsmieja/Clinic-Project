@@ -4,11 +4,13 @@ public class VisitDTO {
     private Integer id_wiz; // Added visit ID
     private String opis;
     private String status;
+    private String diagnosis;
     private String data_wiz;
     private String czas_trwania;
     private Long id_lek;
     private PatientDTO patient;
     private Long id_rej;
+    private Long id_pac;
 
     // Constructors
     public VisitDTO() {}
@@ -22,6 +24,9 @@ public class VisitDTO {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getDiagnosis() { return diagnosis; }
+    public void setDiagnosis(String diagnosis) { this.diagnosis = diagnosis; }
 
     public String getData_wiz() { return data_wiz; }
     public void setData_wiz(String data_wiz) { this.data_wiz = data_wiz; }
@@ -37,4 +42,7 @@ public class VisitDTO {
 
     public Long getId_rej() { return id_rej; }
     public void setId_rej(Long id_rej) { this.id_rej = id_rej; }
+
+    public Long getId_pac() { return id_pac; }
+    public void setId_pac(Long id_pac) { this.id_pac = id_pac; }
 }

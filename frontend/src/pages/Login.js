@@ -13,7 +13,7 @@ export default function LoginForm({ onLogin }) {
 
     try {
       console.log("Wysyłane dane: ",{username, password});
-      const res = await axios.post("/login", {
+      const res = await axios.post("/auth/login", {
         username,
         password,
       });
