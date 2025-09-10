@@ -1,0 +1,42 @@
+.lab-manager-panel {
+      padding: 20px;
+      font-family: sans-serif;
+  }
+
+  .error-message {
+      color: red;
+  }
+
+  .exams-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+  }
+
+  .exams-table th, .exams-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+  }
+
+  .exams-table th {
+      background-color: #f2f2f2;
+  }
+
+  .actions-cell button {
+      margin-right: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+  }
+
+  .btn-approve {
+      background-color: #008CBA;
+      color: white;
+  }
+
+  .btn-cancel {
+      background-color: #f44336;
+      color: white;
+  }

@@ -156,10 +156,12 @@ public class VisitService {
         if(visit.getLabExams() != null && !visit.getLabExams().isEmpty()){
             List<LabExamDTO> examLabDTOs = visit.getLabExams().stream()
                     .map(exam -> new LabExamDTO(
+                            exam.getId(),
                             exam.getCode().getCode(),
                             exam.getCode().getName(),
                             exam.getDoctorNotes(),
-                            exam.getStatus()
+                            exam.getStatus(),
+                            exam.getResult()
                     ))
                     .collect(Collectors.toList());
             dto.setLabExams(examLabDTOs);

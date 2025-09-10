@@ -38,8 +38,10 @@ public class LaboratoryExamination {
     @JoinColumn(name="id_klab")
     private LabManager labManager;
     public LaboratoryExamination() {}
+    @Column(name="powod_anul")
+    private String cancelReason;
 
-    public LaboratoryExamination(Long id, LocalDate orderDate, String status, LocalDate executionOrCancellationDate, String result, String doctorNotes, LocalDate approvalOrCancellationDate, String managerNotes, LabTech labTech, Code code, Visit visit, LabManager labManager) {
+    public LaboratoryExamination(Long id, LocalDate orderDate, String status, LocalDate executionOrCancellationDate, String result, String doctorNotes, LocalDate approvalOrCancellationDate, String managerNotes, LabTech labTech, Code code, Visit visit, LabManager labManager, String cancelReason) {
         Id = id;
         this.orderDate = orderDate;
         this.status = status;
@@ -52,6 +54,7 @@ public class LaboratoryExamination {
         this.code = code;
         this.visit = visit;
         this.labManager = labManager;
+        this.cancelReason = cancelReason;
     }
 
     public Long getId() {
@@ -149,4 +152,14 @@ public class LaboratoryExamination {
     public void setLabManager(LabManager labManager) {
         this.labManager = labManager;
     }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+
 }
