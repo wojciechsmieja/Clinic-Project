@@ -16,6 +16,6 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 To start server go to the **/frontend** folder in cmd and type there:
 ```
-npm install *** <- (to install all environment modules)
-npm start dev*** <- to start local server
+npm install <- (to install all environment modules)
+npm start dev <- to start local server
 ```
