@@ -32,14 +32,14 @@ function Visit(){
 
     function handleDeleteClick(id) {
         console.log("id wizyty: ", id);
-        if(window.confirm("Czy na pewno chcesz usunąc wizytę?")){
-            axiosInstance.delete(`/visits/${id}`)
+        if(window.confirm("Czy na pewno chcesz anulować wizytę?")){
+            axiosInstance.patch(`/visits/${id}`,{"status": "Anulowana"})
             .then(response=>{
                 if(response.status ===204 || response.status === 200){
                     setVisit(prev => prev.filter(v=>v.id_wiz!==id));
-                    alert("Wizyta została usunięta");
+                    alert("Wizyta została Anulowana");
                 }else{
-                    alert("Błąd podczas usuwania wizyty - bad response");
+                    alert("Błąd podczas anulowania wizyty - bad response");
                 }
             })
             .catch(err=>{

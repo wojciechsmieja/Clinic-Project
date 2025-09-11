@@ -1,14 +1,15 @@
 package com.example.clinic.dto;
 
 public class PatientDTO {
+    private Long Id;
     private String name;
     private String surname;
-    //private Long Id;
 
-    public PatientDTO(String name, String surname) {
+
+    public PatientDTO(Long Id, String name, String surname) {
         this.name = name;
         this.surname = surname;
-
+        this.Id = Id;
     }
 
     public String getName() {
@@ -27,5 +28,11 @@ public class PatientDTO {
         this.surname = surname;
     }
 
+    public Long getId() {
+        return Id;
+    }
+    public void setId(Long id) {
+        Id = id;
+    }
 
 }

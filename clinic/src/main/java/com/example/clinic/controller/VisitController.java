@@ -90,4 +90,14 @@ public class VisitController {
         }
     }
 
+    @GetMapping("/by-patient/{patientId}")
+    public ResponseEntity<List<VisitDTO>> getVisitsByPatientId(@PathVariable Long patientId) {
+        try{
+            List<VisitDTO> patientVisits = visitService.getVisitsForPatient(patientId);
+            return ResponseEntity.ok(patientVisits);
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

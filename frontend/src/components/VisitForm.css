@@ -1,0 +1,62 @@
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 50%;
+
+}
+h2{
+    color: black ;
+}
+form div{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input, select, textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+.choose-day-container{
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    flex-wrap:wrap; 
+    gap: 10px
+}
+.choose-hour-container{
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    flex-wrap:wrap; 
+    gap: 10px
+}
+.filtered-patients-ul{
+    border: 1px solid #ccc; 
+    max-height: 200px; 
+    overflow-y: auto;
+    padding:5px;
+    min-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    border-radius: 5px;
+}
+.filtered-patients-ul li{
+    display: block;
+    margin: 0;
+}
+.visit-form{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}

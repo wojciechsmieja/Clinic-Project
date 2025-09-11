@@ -112,22 +112,7 @@ button.delete:hover {
     background: #c82333;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
 
-form label {
-    font-weight: bold;
-}
-
-form input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
 
 .details {
     margin-top: 20px;

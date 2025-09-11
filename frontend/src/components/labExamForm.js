@@ -80,7 +80,6 @@ function LabExamForm({visitId}){
                         id="doctor-notes"
                         value={doctorNotes}
                         onChange={e=>setDoctorNotes(e.target.value)}
-                        required
                         rows="4"
                         >
                         </textarea>

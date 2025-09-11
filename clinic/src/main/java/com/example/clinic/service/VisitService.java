@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,15 +121,14 @@ public class VisitService {
     private VisitDTO convertToDto(Visit visit) {
         VisitDTO dto = new VisitDTO();
 
-        // Set basic fields from the entity
-        dto.setId_wiz(visit.getId()); // Set the ID
+        dto.setId_wiz(visit.getId());
         dto.setOpis(visit.getDescription());
         dto.setStatus(visit.getStatus());
         dto.setDiagnosis(visit.getDiagnosis());
-        dto.setData_wiz(visit.getDate().toString()); // Convert LocalDateTime to String
-        dto.setCzas_trwania(visit.getDuration().toString()); // Convert Duration to String (e.g., "PT30M")
+        dto.setData_wiz(visit.getDate().toString());
+        dto.setCzas_trwania(visit.getDuration().toString());
 
-        // Set related entity IDs
+
         if (visit.getDoctor() != null) {
             dto.setId_lek(visit.getDoctor().getId());
         }
@@ -136,10 +136,10 @@ public class VisitService {
             dto.setId_rej(visit.getRegister().getId());
         }
 
-        // Create and set PatientDTO from the associated Patient entity
+
         Patient patientEntity = visit.getPatient();
         if (patientEntity != null) {
-            PatientDTO patientDto = new PatientDTO(patientEntity.getName(), patientEntity.getSurname());
+            PatientDTO patientDto = new PatientDTO(patientEntity.getId(), patientEntity.getName(), patientEntity.getSurname());
             dto.setPatient(patientDto); // Corrected setter name
         }
 
@@ -161,7 +161,8 @@ public class VisitService {
                             exam.getCode().getName(),
                             exam.getDoctorNotes(),
                             exam.getStatus(),
-                            exam.getResult()
+                            exam.getResult(),
+                            exam.getCancelReason()
                     ))
                     .collect(Collectors.toList());
             dto.setLabExams(examLabDTOs);
@@ -169,6 +170,14 @@ public class VisitService {
 
         return dto;
     }
+
+    public List<VisitDTO> getVisitsForPatient(Long patientId) {
+        return visitRepository.findByPatientIdAndStatus(patientId, "Zakończona")
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     public VisitDTO findVisitById(Integer id){
         return visitRepository.findById(id)
                 .map(this::convertToDto)
@@ -182,9 +191,12 @@ public class VisitService {
             visit.setDiagnosis((String) updates.get("diagnosis"));
         }
 
-        if(updates.containsKey("status") && "Zakończona".equals(updates.get("status"))){
-            visit.setStatus("Zakończona");
-            visit.setCancellationTime(LocalDateTime.now());
+        if(updates.containsKey("status")){
+            String newStatus = (String) updates.get("status");
+            if("Zakończona".equals(newStatus) || "Anulowana".equals(newStatus)){
+                visit.setStatus(newStatus);
+                visit.setCancellationTime(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+            }
         }
         Visit updatedVisit = visitRepository.save(visit);
         return convertToDto(updatedVisit);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from './axiosInstance';
+import "./VisitForm.css";
 
 function VisitForm() {
   const [doctors, setDoctors] = useState([]);
@@ -159,84 +160,77 @@ function VisitForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ width: '80%', margin: 'auto' }}>
-      <h2>Ustal nową wizytę</h2>
-
-      <label>Opis:</label><br />
-      <textarea name="opis" value={form.opis} onChange={handleChange} required /><br /><br />
-
-      <label>Lekarz:</label><br />
-      <select name="id_lek" value={form.id_lek} onChange={handleChange} required>
-        <option value="">-- Wybierz lekarza --</option>
-        {doctors.map(doc => (
-          <option key={doc.id} value={doc.id}>{doc.name} {doc.surname}</option>
-        ))}
-      </select><br /><br />
-
-      <label>Czas trwania wizyty:</label><br />
-      <select name="duration" value={form.duration} onChange={handleChange} required>
-        <option value="15">15 minut</option>
-        <option value="20">20 minut</option>
-        <option value="30">30 minut</option>
-      </select><br /><br />
-
-      {/* --- New Availability UI --- */}
-      {form.id_lek && form.duration && (
-        <div>
-          <h4>Wybierz dzień</h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {availableDays.length > 0 ? (
-              availableDays.map(day => (
-                <button type="button" key={day} onClick={() => handleDaySelect(day)}
-                  style={{ fontWeight: selectedDay === day ? 'bold' : 'normal' , backgroundColor: selectedDay === day ? 'green' : 'darkgrey'}}>
-                  {day}
-                </button>
-              ))
-            ) : (
-              <p>Brak dostępnych dni w tym miesiącu dla wybranych kryteriów.</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {selectedDay && (
-        <div>
-          <h4>Wybierz godzinę (dla {selectedDay})</h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {availableSlots.length > 0 ? (
-              availableSlots.map(slot => (
-                <button type="button" key={slot} onClick={() => handleSlotSelect(slot)}
-                  style={{fontWeight: selectedSlot === slot ? 'bold' : 'normal', backgroundColor: selectedSlot === slot ? 'green' : 'darkgrey'}}>
-                  {slot}
-                </button>
-              ))
-            ) : (
-              <p>Brak dostępnych godzin w tym dniu.</p>
-            )}
-          </div>
-        </div>
-      )}
-      {/* --- End of New UI --- */}
-
-      <br />
-      <label>Pacjent:</label><br />
-      <input type='text' placeholder='Wyszukaj pacjenta po imieniu/nazwisku'
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} />
-      {filteredPatients.length > 0 && (
-        <ul style={{ border: '1px solid #ccc', maxHeight: '150px', overflowY: 'auto', padding: '5px' }}>
-          {filteredPatients.map(pac => (
-            <li key={pac.id} onClick={() => handleSelectPatient(pac)}
-              style={{ cursor: 'pointer', padding: '5px' }}>
-              Imię: {pac.name}<br /> Nazwisko: {pac.surname}<br /> Pesel: {pac.pesel}
-            </li>
+    <div className='visit-form'>
+      <form onSubmit={handleSubmit} >
+        <h2>Ustal nową wizytę</h2>
+        <label>Opis:</label>
+        <textarea name="opis" value={form.opis} onChange={handleChange} required />
+        <label>Lekarz:</label>
+        <select name="id_lek" value={form.id_lek} onChange={handleChange} required>
+          <option value="">-- Wybierz lekarza --</option>
+          {doctors.map(doc => (
+            <option key={doc.id} value={doc.id}>{doc.name} {doc.surname}</option>
           ))}
-        </ul>
-      )}
-      <br /><br />
+        </select>
 
-      <button type="submit">Zapisz wizytę</button>
-    </form>
+        <label>Czas trwania wizyty:</label>
+        <select name="duration" value={form.duration} onChange={handleChange} required>
+          <option value="15">15 minut</option>
+          <option value="20">20 minut</option>
+          <option value="30">30 minut</option>
+        </select>
+        {form.id_lek && form.duration && (
+          <div>
+            <h4>Wybierz dzień</h4>
+            <div className='choose-day-container'>
+              {availableDays.length > 0 ? (
+                availableDays.map(day => (
+                  <button type="button" key={day} onClick={() => handleDaySelect(day)}
+                    style={{ fontWeight: selectedDay === day ? 'bold' : 'normal' , backgroundColor: selectedDay === day ? 'green' : 'darkgrey'}}>
+                    {day}
+                  </button>
+                ))
+              ) : (
+                <p>Brak dostępnych dni w tym miesiącu dla wybranych kryteriów.</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {selectedDay && (
+          <div>
+            <h4>Wybierz godzinę (dla {selectedDay})</h4>
+            <div className='choose-hour-container'>
+              {availableSlots.length > 0 ? (
+                availableSlots.map(slot => (
+                  <button type="button" key={slot} onClick={() => handleSlotSelect(slot)}
+                    style={{fontWeight: selectedSlot === slot ? 'bold' : 'normal', backgroundColor: selectedSlot === slot ? 'green' : 'darkgrey'}}>
+                    {slot}
+                  </button>
+                ))
+              ) : (
+                <p>Brak dostępnych godzin w tym dniu.</p>
+              )}
+            </div>
+          </div>
+        )}
+        <label>Pacjent:</label>
+        <input type='text' placeholder='Wyszukaj pacjenta po imieniu/nazwisku'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} />
+        {filteredPatients.length > 0 && (
+          <ul className='filtered-patients-ul'>
+            {filteredPatients.map(pac => (
+              <li key={pac.id} onClick={() => handleSelectPatient(pac)}
+                style={{ cursor: 'pointer', padding: '5px' }}>
+                Imię: {pac.name}<br /> Nazwisko: {pac.surname}<br /> Pesel: {pac.pesel}
+              </li>
+            ))}
+          </ul>
+        )}
+        <button type="submit">Zapisz wizytę</button>
+      </form>
+    </div>
   );
 }
 

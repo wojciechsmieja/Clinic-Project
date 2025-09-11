@@ -6,11 +6,18 @@
     border: solid 2px var(--border-1);
     border-radius: 10px;
     padding: 2rem;
+    margin-top: 5rem;
 }
 .login-form input{
     font-size: 20px;
     font-weight: 600;
 }
 h1{
-    margin-bottom: 10rem;
+    font-size: 30px !important;;
+}
+.login-form p {
+    font-size: 2rem;
+    margin-top:0;
+    font-weight: 600;
+    color: aliceblue;
 }

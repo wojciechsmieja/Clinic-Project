@@ -40,7 +40,8 @@ public class LabTechService {
                         exam.getCode().getName(),
                         exam.getDoctorNotes(),
                         exam.getStatus(),
-                        exam.getResult()
+                        exam.getResult(),
+                        exam.getCancelReason()
                 ))
                 .collect(Collectors.toList());
     }

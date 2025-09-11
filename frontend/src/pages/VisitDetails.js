@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../components/axiosInstance'
 import PhysicalExamForm from '../components/PhysicalForm';
 import LabExamForm from '../components/labExamForm';
+import PatientHistory from '../components/PatientHistory';
 import "./VisitDetails.css";
 
 function VisitDetails() {
@@ -108,6 +109,12 @@ function VisitDetails() {
                     </form>
                 </div>
             </div>
+            <div className='patient-history-parent'>
+                <p>Historia pacjenta: </p>
+                {visit.patient?.id && (
+                    <PatientHistory patientId={visit.patient.id} currentVisitId={visit.id_wiz}/>
+                )}
+            </div>
             <div className='added-physical-exams'>
                 {visit.physicalExams && visit.physicalExams.length >0 &&(
                     <div className='completed-exams'>
@@ -126,7 +133,7 @@ function VisitDetails() {
             <div className='added-lab-exams'>
                 {visit.labExams && visit.labExams.length >0 &&(
                     <div className='completed-exams'>
-                        <h2>Wykonane badania laboratoryjne</h2>
+                        <h2>Badania laboratoryjne</h2>
                         <ul style={{listStyleType: 'none', padding: '0'}}>
                             {visit.labExams.map((exam, index)=>(
                             <li key={index} style={{background: '#f9f9f9', border: '1px solid #ddd', padding: '10px', marginBottom:'10px', borderRadius: '10px'}}>
@@ -134,7 +141,9 @@ function VisitDetails() {
                                 <span style={{ background: '#e0e0e0', padding: '2px 8px', borderRadius:'10px', fontSize: '12px' }}>
                                     Status: {exam.status}
                                 </span>
-                                {exam.doctorNotes && <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>Uwagi: {exam.doctorNotes}</p>}
+                                <p style={{ margin: '5px 0 0 0', fontSize: '14px' }}>Uwagi: {exam.doctorNotes ? exam.doctorNotes : "Brak"}</p>
+                                {exam.status==="Zatwierdzone" && (<p className='lab-exam-result'>Wynik: {exam.result}</p>)}
+                                {exam.status==="Anulowane" && (<p className='lab-exam-result'>Powód anulowania: {exam.cancelReason}</p>)}
                             </li>
                             ))}
                         </ul>

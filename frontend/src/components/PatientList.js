@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import axiosInstance from './axiosInstance'
+import "./PatientList.css";
 
 function PatientList(){
     const [patients, setPatients] = useState([]);
@@ -89,35 +90,37 @@ function PatientList(){
     }
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>List of Patients</h2>
-            <ul>
-                {patients.map(patient => (
-                    <li key={patient.id}>
-                        {patient.name}, {patient.surname}
-                        <button onClick={() => setSelectedPatient(patient)}>
-                            Show details
-                        </button>
-                        <button onClick = {()=> handleDelete(patient.id)} style={{marginLeft: '10px', color: 'red'}}>
-                            Delete
-                        </button>
-                    </li>
-                ))}
-            </ul>
+        <div>
+            <div className='patients-list'>
+                <h2 id="h2-patients">Lista Pacjentów</h2>
+                <ul>
+                    {patients.map(patient => (
+                        <li key={patient.id}>
+                            {patient.name}, {patient.surname}
+                            <button onClick={() => setSelectedPatient(patient)}>
+                                Pokaż szczegóły
+                            </button>
+                            <button onClick = {()=> handleDelete(patient.id)} style={{marginLeft: '10px', color: 'red'}}>
+                                Usuń
+                            </button>
+                        </li>
+                    ))}
+                </ul>
 
-            {selectedPatient && (
-                <div style={{ marginTop: '20px', border: '1px solid gray', padding: '10px' }}>
-                    <h3>Patient's details</h3>
-                    <p><strong>Imię:</strong> {selectedPatient.name}</p>
-                    <p><strong>Nazwisko:</strong> {selectedPatient.surname}</p>
-                    <p><strong>PESEL:</strong> {selectedPatient.pesel}</p>
-                    <p><strong>Data urodzenia:</strong> {selectedPatient.dateOfBirth}</p>
-                    <p><strong>Email:</strong> {selectedPatient.email}</p>
-                </div>
-            )}
+                {selectedPatient && (
+                    <div className='list-of-patiets'>
+                        <h3>Szczegóły pacjenta</h3>
+                        <p><strong>Imię:</strong> {selectedPatient.name}</p>
+                        <p><strong>Nazwisko:</strong> {selectedPatient.surname}</p>
+                        <p><strong>PESEL:</strong> {selectedPatient.pesel}</p>
+                        <p><strong>Data urodzenia:</strong> {selectedPatient.dateOfBirth}</p>
+                        <p><strong>Email:</strong> {selectedPatient.email}</p>
+                    </div>
+                )}
+            </div>
 
-            <div style={{ marginTop: '40px' }}>
-                <h3>Add New Patient</h3>
+            <div className='add-patient-form' >
+                <h3>Dodaj nowego pacjenta</h3>
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Imię:</label>

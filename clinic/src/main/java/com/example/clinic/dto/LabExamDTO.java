@@ -7,16 +7,18 @@ public class LabExamDTO {
     private String doctorNotes;
     private String status;
     private String result;
+    private String cancelReason;
 
     public LabExamDTO(){}
 
-    public LabExamDTO(Long id, String code, String name, String doctorNotes, String status, String result) {
+    public LabExamDTO(Long id, String code, String name, String doctorNotes, String status, String result, String cancelReason) {
         this.id = id;
         this.code = code;
         this.name = name;
         this.doctorNotes = doctorNotes;
         this.status = status;
         this.result=result;
+        this.cancelReason=cancelReason;
     }
 
     public Long getId() {
@@ -62,5 +64,12 @@ public class LabExamDTO {
     }
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
     }
 }

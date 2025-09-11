@@ -17,4 +17,6 @@ public interface VisitRepository extends JpaRepository<Visit, Integer> {
     List<Visit> findByDoctorAndDateBetween(Doctor doctor, LocalDateTime start, LocalDateTime end);
 
     VisitDTO getVisitById(Integer id);
+
+    List<Visit> findByPatientIdAndStatus(Long id, String status);
 }

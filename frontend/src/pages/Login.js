@@ -32,8 +32,9 @@ export default function LoginForm({ onLogin }) {
 
   return (
     <div>
-      <h1>Zaloguj się do platfromy</h1>
+      <h1>Przychodnia</h1>
       <form onSubmit={handleSubmit} className="login-form">
+        <p>Zaloguj się</p>
         <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
         <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
         <button type="submit">Zaloguj</button>
