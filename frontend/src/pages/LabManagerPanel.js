@@ -5,7 +5,16 @@ function LabManagerPanel() {
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    useEffect(() => {
+
+    const [actionState, setActionState] = useState({
+        examId: null, 
+        actionType: null, 
+        inputValue: '',
+        submitting: false,
+    });
+
+    const fetchCompletedExams = () => {
+        setLoading(true);
         axiosInstance.get('/labmanager/exams/completed')
             .then(response => {
                 setExams(response.data);
@@ -17,7 +26,44 @@ function LabManagerPanel() {
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    };
+
+    useEffect(()=>{
+        fetchCompletedExams();
+    },[]);
+
+    const handleActionClick = (examId, type) => {
+        setActionState({examId:examId, actionType: type, inputValue: '', submitting: false});
+    }
+
+    const handleApproveAction = () => {
+        const {examId, actionType, inputValue} = actionState;
+        if(actionType==='cancel'&&!inputValue){
+            alert('Powód nie może być pusty!');
+            return;
+        }
+        setActionState(prev=>({...prev, submitting: true}));
+
+        const payload = actionType ==='cancel' ? {reason: inputValue} : {};
+
+        axiosInstance.patch(`labmanager/exams/${examId}/${actionType}`, payload)
+            .then(()=>{
+                const actionText = actionType === 'approve' ? 'zatwierdzone' : 'anulowane';
+                alert(`Badanie zostało ${actionText}`);
+                cancelAction();
+                fetchCompletedExams();
+            })
+            .catch(err=>{
+                console.error(`Błąd podczas akcji ${actionType}`, err);
+                alert('Nie udało się wykonać akcji.');
+                setActionState(prev=>({...prev, submitting:false}));
+            });
+    };
+
+    const cancelAction = () => {
+        setActionState({ examId: null, actionType: null, inputValue: '', submitting: false });
+    }
+
     if (loading) {
         return <div>Ładowanie badań...</div>;
     }
@@ -46,8 +92,30 @@ function LabManagerPanel() {
                                 <td>{exam.result}</td>
                                 <td>{exam.doctorNotes}</td>
                                 <td className="actions-cell">
-                                    <button className="btn-approve">Zatwierdź</button>
-                                    <button className="btn-cancel">Anuluj</button>
+                                    {actionState.examId === exam.id ? (                                    
+                                        <div>
+                                            {actionState.actionType === 'cancel' && (
+                                                <input
+                                                    type="text"
+                                                    placeholder="Wpisz powód anulowania..."
+                                                    value={actionState.inputValue}
+                                                    onChange={e => setActionState(prev => ({ ...prev, inputValue: e.target.value }))}
+                                                />
+                                            )}
+                                            {actionState.actionType === 'approve' && (
+                                                <span>Czy na pewno zatwierdzić?</span>
+                                            )}
+                                            <button onClick={handleApproveAction} disabled={actionState.submitting}>
+                                                {actionState.submitting ? 'Wysyłanie...' : 'Zatwierdź'}
+                                            </button>
+                                            <button onClick={cancelAction} disabled={actionState.submitting}>Anuluj</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <button className="btn-approve" onClick={() => handleActionClick(exam.id, 'approve')}>Zatwierdź</button>
+                                            <button className="btn-cancel" onClick={() => handleActionClick(exam.id, 'cancel')}>Anuluj</button>
+                                        </div>
+                                      )}
                                 </td>
                             </tr>
                         ))}

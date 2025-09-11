@@ -38,14 +38,14 @@ public class LabTechService {
                         exam.getId(),
                         exam.getCode().getCode(),
                         exam.getCode().getName(),
-                        exam.getStatus(),
                         exam.getDoctorNotes(),
+                        exam.getStatus(),
                         exam.getResult()
                 ))
                 .collect(Collectors.toList());
     }
 
-    public LaboratoryExamination completeExam(Long examId, String result){
+    public void completeExam(Long examId, String result){
         LaboratoryExamination exam= laboratoryExaminationRepository.findById(examId)
                 .orElseThrow(()-> new IllegalArgumentException("Exam not found"));
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -63,9 +63,9 @@ public class LabTechService {
         exam.setStatus("Wykonane");
         exam.setExecutionOrCancellationDate(LocalDate.now());
         exam.setLabTech(labTech);
-        return laboratoryExaminationRepository.save(exam);
+        laboratoryExaminationRepository.save(exam);
     }
-    public LaboratoryExamination cancelExam(Long examId, String reason){
+    public void cancelExam(Long examId, String reason){
         LaboratoryExamination exam = laboratoryExaminationRepository.findById(examId)
                 .orElseThrow(()-> new IllegalArgumentException("Exam not found"));
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -83,7 +83,7 @@ public class LabTechService {
         exam.setCancelReason(reason);
         exam.setExecutionOrCancellationDate(LocalDate.now());
         exam.setLabTech(labTech);
-        return laboratoryExaminationRepository.save(exam);
+        laboratoryExaminationRepository.save(exam);
     }
 
 

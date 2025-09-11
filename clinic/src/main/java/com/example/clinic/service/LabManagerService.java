@@ -46,7 +46,7 @@ public class LabManagerService {
                 ))
                 .collect(Collectors.toList());
     }
-    public LaboratoryExamination approveExam(Long examId, String result){
+    public void approveExam(Long examId){
         LaboratoryExamination exam= labExamRepository.findById(examId)
                 .orElseThrow(()-> new IllegalArgumentException("Exam not found"));
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -60,13 +60,12 @@ public class LabManagerService {
                 .orElseThrow(()-> new IllegalArgumentException("Employee not found"));
         LabManager labManager = repository.findByEmployee(employee)
                 .orElseThrow(()-> new RuntimeException("LabManager not found"));
-        exam.setResult(result);
         exam.setStatus("Zatwierdzone");
         exam.setApprovalOrCancellationDate(LocalDate.now());
         exam.setLabManager(labManager);
-        return labExamRepository.save(exam);
+        labExamRepository.save(exam);
     }
-    public LaboratoryExamination managerCancelExam(Long examId, String reason){
+    public void managerCancelExam(Long examId, String reason){
         LaboratoryExamination exam = labExamRepository.findById(examId)
                 .orElseThrow(()-> new IllegalArgumentException("Exam not found"));
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -84,6 +83,6 @@ public class LabManagerService {
         exam.setCancelReason(reason);
         exam.setApprovalOrCancellationDate(LocalDate.now());
         exam.setLabManager(labManager);
-        return labExamRepository.save(exam);
+        labExamRepository.save(exam);
     }
 }

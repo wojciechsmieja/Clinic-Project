@@ -1,5 +1,6 @@
 package com.example.clinic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
@@ -33,6 +34,7 @@ public class LaboratoryExamination {
     private Code code;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_wiz", nullable = false)
+    //@JsonIgnore
     private Visit visit;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="id_klab")

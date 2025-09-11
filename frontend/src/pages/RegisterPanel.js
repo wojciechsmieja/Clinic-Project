@@ -1,6 +1,7 @@
 import React from 'react';
 import PatientList from '../components/PatientList';
 import VisitForm from '../components/VisitForm';
+import "./RegisterPanel.css";
 
 function RegisterPanel(){
     return (

@@ -35,15 +35,25 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // endpoint logowania bez autoryzacji
-                        //DOCTORS
-                        .requestMatchers("/api/doctors/**").hasAnyRole("LEKARZ","REJESTRATOR")
-                        .requestMatchers("/api/visits/**").hasAnyRole("LEKARZ","REJESTRATOR")
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/doctors/**").hasAnyRole("LEKARZ", "REJESTRATOR")
+                        .requestMatchers("/api/visits/**").hasAnyRole("LEKARZ", "REJESTRATOR")
                         .requestMatchers("/api/register/**").hasRole("REJESTRATOR")
                         .requestMatchers("/api/patients**").hasRole("REJESTRATOR")
-                        .requestMatchers("/api/labtech/**").hasRole("LABORANT")
-                        .requestMatchers("/api/labmanager").hasRole("KIEROWNIK")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // --- Nowa, jawna konfiguracja dla laboranta i kierownika ---
+                        .requestMatchers(HttpMethod.GET, "/api/labtech/**").hasRole("LABORANT")
+                        .requestMatchers(HttpMethod.PATCH, "/api/labtech/**").hasRole("LABORANT")
+                        .requestMatchers(HttpMethod.POST, "/api/labtech/**").hasRole("LABORANT")
+                        .requestMatchers(HttpMethod.PUT, "/api/labtech/**").hasRole("LABORANT")
+                        .requestMatchers(HttpMethod.DELETE, "/api/labtech/**").hasRole("LABORANT")
+
+                        .requestMatchers(HttpMethod.GET, "/api/labmanager/**").hasRole("KIEROWNIK")
+                        .requestMatchers(HttpMethod.PATCH, "/api/labmanager/**").hasRole("KIEROWNIK")
+                        .requestMatchers(HttpMethod.POST, "/api/labmanager/**").hasRole("KIEROWNIK")
+                        .requestMatchers(HttpMethod.PUT, "/api/labmanager/**").hasRole("KIEROWNIK")
+                        .requestMatchers(HttpMethod.DELETE, "/api/labmanager/**").hasRole("KIEROWNIK")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

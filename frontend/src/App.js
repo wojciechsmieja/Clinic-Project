@@ -61,10 +61,10 @@ function App() {
           <Route path="/register" element={
             <PrivateRoute allowedRoles={["ROLE_REJESTRATOR"]}><RegisterPanel/></PrivateRoute>
           }/>
-          <Route path="/labTech" element={
+          <Route path="/labtech" element={
             <PrivateRoute allowedRoles={["ROLE_LABORANT"]}><LabTechPanel/></PrivateRoute>
           }/>
-          <Route path="/labManager" element={
+          <Route path="/labmanager" element={
             <PrivateRoute allowedRoles={["ROLE_KIEROWNIK"]}><LabManagerPanel/></PrivateRoute>
           }/>
           <Route path="/admin" element={

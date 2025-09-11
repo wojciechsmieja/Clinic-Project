@@ -47,7 +47,7 @@ function VisitDetails() {
             diagnosis: diagnosis,
             status: 'Zakończona'
         };
-        axiosInstance.patch(`/api/visits/${id}`, payload)
+        axiosInstance.patch(`/visits/${id}`, payload)
             .then(response => {
                 setMessage('Wizyta została zakończona pomyślnie.');
                 setTimeout(()=>{
@@ -59,7 +59,7 @@ function VisitDetails() {
                 setMessage('Błąd przy zakańczaniu wizyty. Spróbuj ponownie');
             });
     }
-
+/*
     const handleExamAdded = (newExam) => {
         setVisit(prevVisit =>{
             const examDto={
@@ -73,7 +73,7 @@ function VisitDetails() {
             }
         });
     }
-
+*/
     if(!visit){
         return <div>Ładowanie danych wizyty...</div>
     }

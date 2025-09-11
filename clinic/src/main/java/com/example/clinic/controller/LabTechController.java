@@ -33,21 +33,21 @@ public class LabTechController {
     }
 
     @PatchMapping("/exams/{id}/complete")
-    public ResponseEntity<LaboratoryExamination> completeExam(@PathVariable Long id, @RequestBody
+    public ResponseEntity<Void> completeExam(@PathVariable Long id, @RequestBody
     CompleteExamRequest request) {
         try {
-            LaboratoryExamination updatedExam = labTechService.completeExam(id, request.getResult());
-            return ResponseEntity.ok(updatedExam);
+            labTechService.completeExam(id, request.getResult());
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
     @PatchMapping("/exams/{id}/cancel")
-    public ResponseEntity<LaboratoryExamination> cancelExam(@PathVariable Long id, @RequestBody
+    public ResponseEntity<Void> cancelExam(@PathVariable Long id, @RequestBody
     CancelExamRequest request) {
         try {
-            LaboratoryExamination updatedExam = labTechService.cancelExam(id, request.getReason());
-            return ResponseEntity.ok(updatedExam);
+            labTechService.cancelExam(id, request.getReason());
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

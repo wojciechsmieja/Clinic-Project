@@ -23,8 +23,7 @@ const LabTechPanel = () => {
         setLoading(true);
         axiosInstance.get("/labtech/exams/ordered")
             .then(response => {
-                const examsWithId = response.data.map(exam => ({...exam, id: exam.id})); 
-                setExams(examsWithId);
+                setExams(response.data);
             })
             .catch(err => {
                 console.error("Błąd podczas pobierania zleconych badań", err);
@@ -34,6 +33,11 @@ const LabTechPanel = () => {
                 setLoading(false);
             });           
     }
+
+    useEffect(()=>{
+        fetchOrderedExams();
+    },[]);
+
     const handleActionClick = (examId, type) => {
         setActionState({ examId: examId, actionType: type, inputValue: '', submitting: false });
     };
@@ -66,19 +70,7 @@ const LabTechPanel = () => {
         setActionState({ examId: null, actionType: null, inputValue: '', submitting: false });
     }
 
-    useEffect(()=>{
-        axiosInstance.get('/labtech/exams/ordered')
-            .then(response=>{
-                setExams(response.data);
-            })
-            .catch(err=>{
-                console.error("Błąd podczas pobierania zleconych badań", err);
-                setError('Nie udało się załadować badań.');
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    },[]);
+ 
 
     if(loading){
         return <p>Ładowanie badań...</p>
@@ -106,7 +98,7 @@ const LabTechPanel = () => {
                     </thead>
                     <tbody>
                         {exams.map(exam=>(
-                            <tr key={exam.code}>
+                            <tr key={exam.id}>
                                 <td>{exam.code}</td>
                                 <td>{exam.name}</td>
                                 <td>{exam.doctorNotes}</td>
