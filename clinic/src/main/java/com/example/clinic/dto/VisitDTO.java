@@ -1,5 +1,7 @@
 package com.example.clinic.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class VisitDTO {
@@ -11,10 +13,13 @@ public class VisitDTO {
     private String czas_trwania;
     private Long id_lek;
     private PatientDTO patient;
+    private DoctorDTO doctor;
     private Long id_rej;
     private Long id_pac;
     private List<PhysicalExamDTO> physicalExams;
     private List<LabExamDTO> labExams;
+    private LocalDateTime cancelDate;
+
 
     // Constructors
     public VisitDTO() {}
@@ -59,5 +64,11 @@ public class VisitDTO {
     public void setLabExams(List<LabExamDTO> labExams) {
         this.labExams = labExams;
     }
+
+    public DoctorDTO getDoctor() { return doctor; }
+    public void setDoctor(DoctorDTO doctor) { this.doctor = doctor; }
+
+    public LocalDateTime getCancelDate() { return cancelDate; }
+    public void setCancelDate(LocalDateTime cancelDate) { this.cancelDate = cancelDate; }
 
 }

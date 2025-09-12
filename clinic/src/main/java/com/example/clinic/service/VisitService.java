@@ -10,11 +10,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,10 +125,15 @@ public class VisitService {
         dto.setDiagnosis(visit.getDiagnosis());
         dto.setData_wiz(visit.getDate().toString());
         dto.setCzas_trwania(visit.getDuration().toString());
-
+        dto.setCancelDate(visit.getCancellationTime());
 
         if (visit.getDoctor() != null) {
             dto.setId_lek(visit.getDoctor().getId());
+            Doctor doctorEntity = visit.getDoctor();
+            DoctorDTO doctorDTO = new DoctorDTO(doctorEntity.getId(),
+                    doctorEntity.getName(), doctorEntity.getSurname()
+            );
+            dto.setDoctor(doctorDTO);
         }
         if (visit.getRegister() != null) {
             dto.setId_rej(visit.getRegister().getId());

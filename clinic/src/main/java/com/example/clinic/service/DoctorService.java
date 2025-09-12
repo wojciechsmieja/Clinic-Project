@@ -12,6 +12,7 @@ import java.util.List;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorService {
@@ -48,6 +49,10 @@ public class DoctorService {
 
         //fetch visits and sort them
         List<Visit> visits = visitRepository.findByDoctorAndDateBetween(doctor, dayStart, dayEnd);
+        visits = visits.stream()
+                .filter(visit-> !"Anulowana".equals(visit.getStatus()))
+                .collect(Collectors.toList());
+
         visits.sort(Comparator.comparing(Visit::getDate));
 
         List<LocalTime> availableSlots = new ArrayList<>();

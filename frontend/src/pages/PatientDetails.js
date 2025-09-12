@@ -22,6 +22,7 @@ function PatientDetails() {
                 const patientResponse = axiosInstance.get(`/patients/${id}`);
                 const visitsResponse = axiosInstance.get(`/visits/by-patient/${id}/scheduled`);
                 const [patientResult, visitResult] = await Promise.all([patientResponse, visitsResponse]);
+                console.log(visitResult.data);
                 setPatient(patientResult.data);
                 setScheduledVisits(visitResult.data);
             }
