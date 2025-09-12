@@ -159,7 +159,7 @@ function VisitDetails() {
                                         <ListGroup variant="flush">
                                             {visit.labExams.map((exam, index) => (
                                                 <ListGroup.Item key={index} className="d-flex justify-content-between align-items-start">
-                                                    <Row className="flex-grow-1 me-2"> {/* Use Row and Col for 2-column layout */}
+                                                    <Row className="flex-grow-1 me-2"> 
                                                         <Col xs={9}>
                                                             <div className="fw-bold">{exam.name}</div>
                                                             {(exam.status === 'Anulowane' || exam.status === 'Anulowane przez kierownika') && exam.cancelReason ? (

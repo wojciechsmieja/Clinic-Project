@@ -21,8 +21,6 @@ function Visit() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [feedback, setFeedback] = useState({ type: '', message: '' });
-
-    // Modal state
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [visitToCancel, setVisitToCancel] = useState(null);
 
@@ -57,7 +55,6 @@ function Visit() {
         axiosInstance.patch(`/visits/${visitToCancel.id_wiz}`, { "status": "Anulowana" })
             .then(response => {
                 if (response.status === 204 || response.status === 200) {
-                    // Update the visit status locally
                     setVisits(prevVisits => prevVisits.map(v =>
                         v.id_wiz === visitToCancel.id_wiz ? { ...v, status: 'Anulowana' } : v
                     ));
@@ -77,10 +74,10 @@ function Visit() {
     };
 
     const getBadgeVariant = (status) => {
-        switch (status.toLowerCase()) { // Convert to lowercase here
+        switch (status.toLowerCase()) {
             case 'zakończona': return 'success';
             case 'anulowana': return 'danger';
-            case 'umówiona': return 'info'; // Add 'umówiona' case for scheduled visits if they appear in history for some reason
+            case 'umówiona': return 'info';
             default: return 'secondary';
         }
     };

@@ -90,7 +90,7 @@ function LabExamForm({ visitId, onExamAdded }) {
                                 <Form.Label>Dodatkowe informacje (opcjonalne)</Form.Label>
                                 <Form.Control
                                     as="textarea"
-                                    rows={3}
+                                    rows={4}
                                     value={doctorNotes}
                                     onChange={e => setDoctorNotes(e.target.value)}
                                     placeholder="Wprowadź dodatkowe uwagi dla laboratorium..."

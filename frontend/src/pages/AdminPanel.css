@@ -30,6 +30,6 @@
     transition: none;
 }
 
-::-webkit-calendar-picker-indicator {
+.ap-calendar::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }

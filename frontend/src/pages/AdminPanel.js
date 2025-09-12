@@ -55,16 +55,19 @@ const AdminPanel = () => {
   }, []);
 
   const filteredEmployees = useMemo(() => {
-    if (!searchTerm) {
-      return employees;
-    }
-    return employees.filter(emp => {
-      const term = searchTerm.toLowerCase();
-      const nameMatch = emp.name && emp.name.toLowerCase().includes(term);
-      const surnameMatch = emp.surname && emp.surname.toLowerCase().includes(term);
-      const usernameMatch = emp.username && emp.username.toLowerCase().includes(term);
-      return nameMatch || surnameMatch || usernameMatch;
-    });
+    const lowercasedSearchTerm = searchTerm.toLowerCase();
+
+    return employees
+      .filter(emp => emp.role !== 'admin')
+      .filter(emp => {
+        if (!lowercasedSearchTerm) {
+          return true;
+        }
+        const nameMatch = emp.name && emp.name.toLowerCase().includes(lowercasedSearchTerm);
+        const surnameMatch = emp.surname && emp.surname.toLowerCase().includes(lowercasedSearchTerm);
+        const usernameMatch = emp.username && emp.username.toLowerCase().includes(lowercasedSearchTerm);
+        return nameMatch || surnameMatch || usernameMatch;
+      });
   }, [searchTerm, employees]);
 
   const handleSubmit = async (e) => {
@@ -190,7 +193,7 @@ const AdminPanel = () => {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Data urodzenia</Form.Label>
-                      <Form.Control type="date" name="data_ur" value={formData.data_ur} onChange={handleChange} required className="bg-dark text-light border-secondary" />
+                      <Form.Control type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required className="ap-calendar bg-dark text-light border-secondary" />
                     </Form.Group>
                   </Col>
                   <Col md={6}>

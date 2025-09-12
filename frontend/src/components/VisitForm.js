@@ -9,7 +9,6 @@ function VisitForm() {
     const [filteredPatients, setFilteredPatients] = useState([]);
 
     // new state for availability logic
-    const [availableDays, setAvailableDays] = useState([]);
     const [availableSlots, setAvailableSlots] = useState([]);
     const [selectedDay, setSelectedDay] = useState(null);
     const [selectedSlot, setSelectedSlot] = useState(null);
@@ -52,31 +51,17 @@ function VisitForm() {
 
     useEffect(() => {
         if (form.id_lek && form.duration) {
-            const now = new Date();
-            fetchAvailableDays(now.getFullYear(), now.getMonth() + 1);
+            // Fetching available slots is now triggered by selecting a day
         }
         // Reset selections when doctor or duration changes
-        setAvailableDays([]);
         setAvailableSlots([]);
         setSelectedDay(null);
         setSelectedSlot(null);
         setForm(prev => ({ ...prev, visitDateTime: '' }));
     }, [form.id_lek, form.duration]);
 
-    const fetchAvailableDays = (year, month) => {
-        axiosInstance.get(`/doctors/${form.id_lek}/available-days`, {
-            params: { year, month, duration: form.duration }
-        })
-            .then(response => {
-                setAvailableDays(response.data);
-            })
-            .catch(error => {
-                console.error('Błąd pobierania dostępnych dni:', error);
-                setAvailableDays([]);
-            });
-    };
-
-    const handleDaySelect = (day) => {
+    const handleDaySelect = (e) => {
+        const day = e.target.value;
         setSelectedDay(day);
         setSelectedSlot(null); // Reset slot selection
         setForm(prev => ({ ...prev, visitDateTime: '' }));
@@ -96,7 +81,7 @@ function VisitForm() {
         setSelectedSlot(slot);
         const dateTime = `${selectedDay}T${slot}`;
         setForm(prev => ({ ...prev, visitDateTime: dateTime }));
-        setSuccess(`Wybrano termin: ${selectedDay} o godzinie ${slot}`);
+        setSuccess(`Wybrano termin: ${selectedDay} o godzinie ${slot.substring(0, 5)}`);
         setError('');
     };
 
@@ -149,7 +134,6 @@ function VisitForm() {
                     status: 'Umówiona', duration: '15', visitDateTime: '',
                 });
                 setSearchQuery('');
-                setAvailableDays([]);
                 setAvailableSlots([]);
                 setSelectedDay(null);
                 setSelectedSlot(null);
@@ -201,17 +185,7 @@ function VisitForm() {
                                 <Col xs={12}>
                                     <hr />
                                     <h4 className="mb-3">Wybierz dzień</h4>
-                                    {availableDays.length > 0 ? (
-                                        <ButtonGroup className="flex-wrap">
-                                            {availableDays.map(day => (
-                                                <Button key={day} variant={selectedDay === day ? 'primary' : 'outline-primary'} onClick={() => handleDaySelect(day)} className="m-1">
-                                                    {day}
-                                                </Button>
-                                            ))}
-                                        </ButtonGroup>
-                                    ) : (
-                                        <p>Brak dostępnych dni w tym miesiącu dla wybranych kryteriów.</p>
-                                    )}
+                                    <Form.Control type="date" onChange={handleDaySelect} className='rp-calebdar'/>
                                 </Col>
                             )}
 
@@ -219,13 +193,17 @@ function VisitForm() {
                                 <Col xs={12}>
                                     <h4 className="mb-3">Wybierz godzinę (dla {selectedDay})</h4>
                                     {availableSlots.length > 0 ? (
-                                        <ButtonGroup className="flex-wrap">
+                                        <div className="time-slot-container">
                                             {availableSlots.map(slot => (
-                                                <Button key={slot} variant={selectedSlot === slot ? 'primary' : 'outline-primary'} onClick={() => handleSlotSelect(slot)} className="m-1">
-                                                    {slot}
-                                                </Button>
+                                                <div
+                                                    key={slot}
+                                                    className={`time-slot ${selectedSlot === slot ? 'selected' : ''}`}
+                                                    onClick={() => handleSlotSelect(slot)}
+                                                >
+                                                    {slot.substring(0, 5)}
+                                                </div>
                                             ))}
-                                        </ButtonGroup>
+                                        </div>
                                     ) : (
                                         <p>Brak dostępnych godzin w tym dniu.</p>
                                     )}
@@ -251,7 +229,7 @@ function VisitForm() {
 
                             <Col xs={12} className="mt-4">
                                 {error && <Alert variant="danger">{error}</Alert>}
-                                {success && <Alert variant="success">{success}</Alert>}
+                                {success && <Alert variant="info">{success}</Alert>}
                             </Col>
 
                             <Col xs={12} className="text-center mt-4">
