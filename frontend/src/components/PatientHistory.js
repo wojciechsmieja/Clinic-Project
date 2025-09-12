@@ -35,6 +35,7 @@ function PatientHistory({ patientId, currentVisitId }) {
             case 'Zatwierdzone': return 'success';
             case 'Anulowane': return 'danger';
             case 'Zlecone': return 'info';
+            case 'Anulowane przez kierownika': return 'warning';
             default: return 'secondary';
         }
     };
