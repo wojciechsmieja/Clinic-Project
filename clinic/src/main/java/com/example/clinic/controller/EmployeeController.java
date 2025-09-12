@@ -1,6 +1,8 @@
 package com.example.clinic.controller;
 
+import com.example.clinic.dto.EmployeeDTO;
 import com.example.clinic.dto.EmployeeRequest;
+import com.example.clinic.dto.EmployeeUpdateDTO;
 import com.example.clinic.entity.Doctor;
 import com.example.clinic.service.DoctorService;
 import org.springframework.http.HttpStatus;
@@ -27,15 +29,10 @@ public class EmployeeController {
         this.doctorService = doctorService;
         //this.passwordEncoder = passwordEncoder;
     }
-/*    @GetMapping("/hash/{password}")
-    public String hashPassword(@PathVariable String password){
-
-        return passwordEncoder.encode(password);
-    }*/
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeService.getAllEmployeeDTOs();
     }
 
     @GetMapping("/{id}")
@@ -62,6 +59,16 @@ public class EmployeeController {
             employeeService.deleteEmployee(id);
             return ResponseEntity.ok().build();
         } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeUpdateDTO dto) {
+        try{
+            EmployeeDTO updatedEmployee =  employeeService.updateEmployee(id, dto);
+            return ResponseEntity.ok(updatedEmployee);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

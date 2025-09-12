@@ -37,5 +37,15 @@ public class PatientController {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long id){
+        try{
+            Patient patient = patientService.getPatientById(id);
+            return ResponseEntity.ok(patient);
+        } catch (RuntimeException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 

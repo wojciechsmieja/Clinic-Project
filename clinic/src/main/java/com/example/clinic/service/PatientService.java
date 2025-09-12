@@ -27,4 +27,9 @@ public class PatientService {
 
     return repository.findAll();
     }
+
+    public Patient getPatientById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Patient not found"));
+    }
 }

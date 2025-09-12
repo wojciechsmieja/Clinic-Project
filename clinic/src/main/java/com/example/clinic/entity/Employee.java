@@ -34,8 +34,6 @@ public class Employee {
     @Column(nullable = false)
     private boolean admin;
 
-
-
     public Employee() {}
 
     public Employee(Long id_prac, String username, String pesel, String password, LocalDate data_ur, String status, boolean admin, String rola) {

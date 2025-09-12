@@ -2,6 +2,7 @@ package com.example.clinic.service;
 
 import com.example.clinic.entity.Employee;
 import com.example.clinic.repository.EmployeeRepository;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         Employee employee = employeeRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("Username not found unlucky"));
+        if("zwolniony".equalsIgnoreCase(employee.getStatus())){
+            throw new DisabledException("Konto pracownika jest nieaktywne");
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 employee.getUsername(),

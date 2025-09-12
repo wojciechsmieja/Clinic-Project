@@ -34,7 +34,13 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
+    public List<Doctor> getDoctorsWorking(){
+        return doctorRepository.findByEmployee_Status("pracuje");
+
+    }
+
     public List<LocalTime> getAvailableSlots(Long doctorId, LocalDate date, int durationInMinutes){
+        System.out.println("Backend otrzymał prośbę o sloty na dzień: " + date);
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found with id: "+doctorId));
         LocalDateTime dayStart = date.atTime(WORK_START_TIME);

@@ -230,4 +230,11 @@ public class VisitService {
         return laboratoryExaminationRepository.save(newExam);
     }
 
+    public List<VisitDTO> getScheduledVisitsForPatient(Long patientId){
+        return visitRepository.findByPatientIdAndStatus(patientId, "Umówiona")
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 }

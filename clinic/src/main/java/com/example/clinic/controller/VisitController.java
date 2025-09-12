@@ -60,11 +60,11 @@ public class VisitController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<VisitDTO> updateVisit(@PathVariable Integer id, @RequestBody Map<String, Object> updates){
+    public ResponseEntity<Void> updateVisit(@PathVariable Integer id, @RequestBody Map<String, Object> updates){
         try
         {
-            VisitDTO updatedVisit = visitService.updateVisit(id, updates);
-            return ResponseEntity.ok(updatedVisit);
+            visitService.updateVisit(id, updates);
+            return ResponseEntity.noContent().build();
         }catch (RuntimeException e){
             return ResponseEntity.notFound().build();
         }
@@ -95,6 +95,16 @@ public class VisitController {
         try{
             List<VisitDTO> patientVisits = visitService.getVisitsForPatient(patientId);
             return ResponseEntity.ok(patientVisits);
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/by-patient/{patientId}/scheduled")
+    public ResponseEntity<List<VisitDTO>> getScheduledVisitsByPatientId(@PathVariable Long patientId) {
+        try{
+            List<VisitDTO> scheduledVisits = visitService.getScheduledVisitsForPatient(patientId);
+            return ResponseEntity.ok(scheduledVisits);
         }catch(Exception e){
             return ResponseEntity.internalServerError().build();
         }

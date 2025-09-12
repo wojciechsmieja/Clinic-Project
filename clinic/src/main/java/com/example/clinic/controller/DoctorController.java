@@ -22,6 +22,10 @@ public class DoctorController {
     public List<Doctor> getAllDoctors(){
         return service.getAllDoctor();
     }
+    @GetMapping("/working")
+    public List<Doctor> getDoctorsWorking(){
+        return service.getDoctorsWorking();
+    }
     @PostMapping
     public Doctor addDoctor(@RequestBody Doctor doctor) {
         return service.saveDoctor(doctor);
