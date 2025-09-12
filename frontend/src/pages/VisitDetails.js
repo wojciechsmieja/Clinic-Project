@@ -79,7 +79,7 @@ function VisitDetails() {
             case 'Anulowane': return 'danger';
             case 'Zlecone': return 'info';
             case 'Wykonane': return 'primary';
-            case 'Anulowane przez kierownika': return 'secondary'; // New case
+            case 'Anulowane przez kierownika': return 'warning';
             default: return 'secondary';
         }
     };
@@ -163,7 +163,7 @@ function VisitDetails() {
                                                         <Col xs={9}>
                                                             <div className="fw-bold">{exam.name}</div>
                                                             {(exam.status === 'Anulowane' || exam.status === 'Anulowane przez kierownika') && exam.cancelReason ? (
-                                                                <div className={exam.status === 'Anulowane' ? "text-danger" : ""}><strong>Powód anulowania:</strong> {exam.cancelReason}</div>
+                                                                <div className={exam.status === 'Anulowane' || exam.status === 'Anulowane przez kierownika' ? "text-danger" : ""}><strong>Powód anulowania:</strong> {exam.cancelReason}</div>
                                                             ) : (
                                                                 exam.result && <div><strong>Wynik:</strong> {exam.result}</div>
                                                             )}
