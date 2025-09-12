@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login.js';
 import { PrivateRoute } from "./PrivateRoute";
 import AdminPanel from './pages/AdminPanel.js';
@@ -9,7 +9,9 @@ import LabTechPanel from "./pages/LabTechPanel.js";
 import LabManagerPanel from "./pages/LabManagerPanel.js";
 import Navbar from "./components/navbar.js";
 import VisitDetails from './pages/VisitDetails.js';
+import PatientDetails from './pages/PatientDetails.js';
 import './App.css';
+
 
 //component for handling redirects after logging in
 const Home = () => {
@@ -72,6 +74,9 @@ function App() {
           }/>
           <Route path="/visit/:id" element={
             <PrivateRoute allowedRoles={["ROLE_LEKARZ"]}><VisitDetails/></PrivateRoute>
+          }/>
+          <Route path="/patients/:id" element={
+            <PrivateRoute allowedRoles={["ROLE_REJESTRATOR"]}><PatientDetails/></PrivateRoute>
           }/>
         </Routes>
       </main>

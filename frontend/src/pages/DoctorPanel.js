@@ -1,15 +1,14 @@
 import React from "react";
-import Visit from '../components/Visit'
+import Visit from '../components/Visit';
+import { Container } from 'react-bootstrap';
 
 function DoctorPanel(){
 
     return (
-        <div>
-            <h1>Panel Lekarza</h1>
-            <div>
-                <Visit/>
-            </div>
-        </div>
+        <Container className="my-4">
+            <h1 className="mb-4">Panel Lekarza</h1>
+            <Visit/>
+        </Container>
     )
 
 }

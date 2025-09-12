@@ -1,8 +1,8 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import './navbar.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Navbar as BootstrapNavbar, Container, Nav, Button } from 'react-bootstrap';
 
-function Navbar(){
+function Navbar() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -10,13 +10,20 @@ function Navbar(){
         localStorage.removeItem("role");
         navigate("/login");
     };
-    return(
-        <div className="navbar">
-          <h2>Przychodnia</h2>
-          <button onClick={handleLogout}>Wyloguj</button>
-        </div>
-    );       
-    
+
+    return (
+        <BootstrapNavbar style={{ backgroundColor: '#008080' }} variant="dark" className="mb-3">
+            <Container fluid>
+                <BootstrapNavbar.Brand href="#">
+                    <span role="img" aria-label="stethoscope" style={{ marginRight: '10px' }}>🩺</span>
+                    Przychodnia
+                </BootstrapNavbar.Brand>
+                <Nav className="ms-auto">
+                    <Button variant="outline-light" onClick={handleLogout}>Wyloguj</Button>
+                </Nav>
+            </Container>
+        </BootstrapNavbar>
+    );
 }
 
 export default Navbar;

@@ -1,17 +1,16 @@
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../components/axiosInstance';
-import './LabManagerPanel.css'; 
+import { Container, Card, Table, Button, Modal, Form, Spinner, Alert } from 'react-bootstrap';
+
 function LabManagerPanel() {
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [feedback, setFeedback] = useState({ type: '', message: '' });
 
-    const [actionState, setActionState] = useState({
-        examId: null, 
-        actionType: null, 
-        inputValue: '',
-        submitting: false,
-    });
+    // Modal and action state
+    const [showModal, setShowModal] = useState(false);
+    const [actionInfo, setActionInfo] = useState({ exam: null, type: null, reason: '', isSubmitting: false });
 
     const fetchCompletedExams = () => {
         setLoading(true);
@@ -28,101 +27,139 @@ function LabManagerPanel() {
             });
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchCompletedExams();
-    },[]);
+    }, []);
 
-    const handleActionClick = (examId, type) => {
-        setActionState({examId:examId, actionType: type, inputValue: '', submitting: false});
-    }
+    const handleActionClick = (exam, type) => {
+        setActionInfo({ exam, type, reason: '', isSubmitting: false });
+        setShowModal(true);
+    };
 
-    const handleApproveAction = () => {
-        const {examId, actionType, inputValue} = actionState;
-        if(actionType==='cancel'&&!inputValue){
-            alert('Powód nie może być pusty!');
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setActionInfo({ exam: null, type: null, reason: '', isSubmitting: false });
+    };
+
+    const handleConfirmAction = () => {
+        const { exam, type, reason } = actionInfo;
+        if (!exam) return;
+
+        if (type === 'cancel' && !reason) {
+            alert('Powód anulowania nie może być pusty!'); // Simple validation
             return;
         }
-        setActionState(prev=>({...prev, submitting: true}));
 
-        const payload = actionType ==='cancel' ? {reason: inputValue} : {};
+        setActionInfo(prev => ({ ...prev, isSubmitting: true }));
 
-        axiosInstance.patch(`labmanager/exams/${examId}/${actionType}`, payload)
-            .then(()=>{
-                const actionText = actionType === 'approve' ? 'zatwierdzone' : 'anulowane';
-                alert(`Badanie zostało ${actionText}`);
-                cancelAction();
-                fetchCompletedExams();
+        const payload = type === 'cancel' ? { reason } : {};
+        const endpoint = `/labmanager/exams/${exam.id}/${type}`;
+
+        axiosInstance.patch(endpoint, payload)
+            .then(() => {
+                const actionText = type === 'approve' ? 'zatwierdzone' : 'anulowane';
+                setFeedback({ type: 'success', message: `Badanie zostało ${actionText}.` });
+                fetchCompletedExams(); // Refresh the list
             })
-            .catch(err=>{
-                console.error(`Błąd podczas akcji ${actionType}`, err);
-                alert('Nie udało się wykonać akcji.');
-                setActionState(prev=>({...prev, submitting:false}));
+            .catch(err => {
+                console.error(`Błąd podczas akcji ${type}`, err);
+                setFeedback({ type: 'danger', message: 'Nie udało się wykonać akcji. Spróbuj ponownie.' });
+            })
+            .finally(() => {
+                handleCloseModal();
             });
     };
 
-    const cancelAction = () => {
-        setActionState({ examId: null, actionType: null, inputValue: '', submitting: false });
+    if (loading) {
+        return (
+            <Container className="text-center my-5">
+                <Spinner animation="border" variant="primary" />
+                <p className="mt-2">Ładowanie badań...</p>
+            </Container>
+        );
     }
 
-    if (loading) {
-        return <div>Ładowanie badań...</div>;
-    }
-    if (error) {
-        return <div className="error-message">{error}</div>;
-    }
     return (
-        <div className="lab-manager-panel">
-            <h1>Panel Kierownika Laboratorium - Badania do Zatwierdzenia</h1>
-            {exams.length === 0 ? (
-                <p>Brak badań do zatwierdzenia.</p>
-            ) : (
-                <table className="exams-table">
-                    <thead>
-                        <tr>
-                            <th>Nazwa Badania</th>
-                            <th>Wynik</th>
-                            <th>Uwagi Lekarza</th>
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {exams.map(exam => (
-                            <tr key={exam.id}>
-                                <td>{exam.name} ({exam.code})</td>
-                                <td>{exam.result}</td>
-                                <td>{exam.doctorNotes}</td>
-                                <td className="actions-cell">
-                                    {actionState.examId === exam.id ? (                                    
-                                        <div>
-                                            {actionState.actionType === 'cancel' && (
-                                                <input
-                                                    type="text"
-                                                    placeholder="Wpisz powód anulowania..."
-                                                    value={actionState.inputValue}
-                                                    onChange={e => setActionState(prev => ({ ...prev, inputValue: e.target.value }))}
-                                                />
-                                            )}
-                                            {actionState.actionType === 'approve' && (
-                                                <span>Czy na pewno zatwierdzić?</span>
-                                            )}
-                                            <button onClick={handleApproveAction} disabled={actionState.submitting}>
-                                                {actionState.submitting ? 'Wysyłanie...' : 'Zatwierdź'}
-                                            </button>
-                                            <button onClick={cancelAction} disabled={actionState.submitting}>Anuluj</button>
-                                        </div>
-                                    ) : (
-                                        <div>
-                                            <button className="btn-approve" onClick={() => handleActionClick(exam.id, 'approve')}>Zatwierdź</button>
-                                            <button className="btn-cancel" onClick={() => handleActionClick(exam.id, 'cancel')}>Anuluj</button>
-                                        </div>
-                                      )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
+        <>
+            <Container className="my-4">
+                <h1>Panel Kierownika Laboratorium</h1>
+                {feedback.message && (
+                    <Alert variant={feedback.type} onClose={() => setFeedback({ message: '' })} dismissible className="mt-3">
+                        {feedback.message}
+                    </Alert>
+                )}
+                {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+
+                <Card className="mt-4 shadow-sm">
+                    <Card.Header as="h5">Badania do Zatwierdzenia</Card.Header>
+                    <Card.Body>
+                        {exams.length === 0 ? (
+                            <p className="text-muted">Brak badań do zatwierdzenia.</p>
+                        ) : (
+                            <Table bordered hover responsive>
+                                <thead>
+                                    <tr>
+                                        <th>Nazwa Badania</th>
+                                        <th>Wynik</th>
+                                        <th>Uwagi Lekarza</th>
+                                        <th className="text-center">Akcje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {exams.map(exam => (
+                                        <tr key={exam.id}>
+                                            <td>{exam.name} ({exam.code})</td>
+                                            <td>{exam.result}</td>
+                                            <td>{exam.doctorNotes || 'Brak'}</td>
+                                            <td className="text-center">
+                                                <Button variant="success" size="sm" onClick={() => handleActionClick(exam, 'approve')}>Zatwierdź</Button>
+                                                <Button variant="danger" size="sm" onClick={() => handleActionClick(exam, 'cancel')} className="ms-2">Anuluj</Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </Card.Body>
+                </Card>
+            </Container>
+
+            <Modal show={showModal} onHide={handleCloseModal} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        {actionInfo.type === 'approve' ? 'Potwierdź zatwierdzenie' : 'Anulowanie badania'}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Czy na pewno chcesz {actionInfo.type === 'approve' ? 'zatwierdzić' : 'anulować'} badanie <strong>{actionInfo.exam?.name}</strong>?</p>
+                    {actionInfo.type === 'cancel' && (
+                        <Form.Group className="mt-3">
+                            <Form.Label><strong>Powód anulowania (wymagany)</strong></Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={actionInfo.reason}
+                                onChange={e => setActionInfo(prev => ({ ...prev, reason: e.target.value }))}
+                                placeholder="Wpisz powód..."
+                            />
+                        </Form.Group>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal} disabled={actionInfo.isSubmitting}>
+                        Zamknij
+                    </Button>
+                    <Button
+                        variant={actionInfo.type === 'approve' ? 'success' : 'danger'}
+                        onClick={handleConfirmAction}
+                        disabled={actionInfo.isSubmitting}
+                    >
+                        {actionInfo.isSubmitting ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : (actionInfo.type === 'approve' ? 'Zatwierdź' : 'Potwierdź anulowanie')}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 }
+
 export default LabManagerPanel;

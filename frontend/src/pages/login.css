@@ -1,23 +1,7 @@
-.login-form{
-    margin: auto;
-    display: flex;
-    width: 60vw;
-    background-color: var(--surface-1);
-    border: solid 2px var(--border-1);
-    border-radius: 10px;
-    padding: 2rem;
-    margin-top: 5rem;
-}
-.login-form input{
-    font-size: 20px;
-    font-weight: 600;
-}
-h1{
-    font-size: 30px !important;;
-}
-.login-form p {
-    font-size: 2rem;
-    margin-top:0;
-    font-weight: 600;
-    color: aliceblue;
+.fix:-webkit-autofill,
+.fix:-webkit-autofill:hover, 
+.fix:-webkit-autofill:focus, 
+.fix:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #ffffff00 inset !important;
+    -webkit-text-fill-color: black !important;
 }

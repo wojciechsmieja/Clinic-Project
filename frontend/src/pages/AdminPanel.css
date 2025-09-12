@@ -1,0 +1,35 @@
+.jump{
+    margin-top: -1rem;
+}
+
+.custom-tabs .nav-link {
+    border-radius: 0.5rem 0.5rem 0 0;
+    border: solid 1px #21252900;
+    color: whitesmoke; 
+}
+
+.custom-tabs .nav-link.active {
+    background-color: #212529;
+    border: solid 1px #212529;
+    color: whitesmoke; 
+}
+
+.custom-tabs:hover .nav-link:hover {
+    border: solid 1px #212529;
+    background-color: #343a40;
+    color: whitesmoke;
+    transition: none;
+}
+
+.input-fix:-webkit-autofill,
+.input-fix:-webkit-autofill:hover, 
+.input-fix:-webkit-autofill:focus, 
+.input-fix:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #212529 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}

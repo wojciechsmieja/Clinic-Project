@@ -1,14 +1,17 @@
-import React, {useState, useEffect} from "react";
-import axiosInstance from "./axiosInstance";
+import React, { useState, useEffect } from 'react';
+import axiosInstance from './axiosInstance';
+import { Form, Button, Card, Row, Col, Spinner, Alert } from 'react-bootstrap';
 
-function PhysicalExamForm ({visitId}){
+function PhysicalExamForm({ visitId, onExamAdded }) {
     const [codes, setCodes] = useState([]);
     const [selectedCode, setSelectedCode] = useState('');
-    const [ result, setResult] = useState('');
+    const [result, setResult] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [submitStatus, setSubmitStatus] = useState({ error: null, success: null });
 
-    useEffect(()=>{
+
+    useEffect(() => {
         axiosInstance.get('codes/physical')
             .then(response => {
                 setCodes(response.data);
@@ -17,78 +20,100 @@ function PhysicalExamForm ({visitId}){
                 console.error("Błąd podczas poboru kodów fizykalnych", error);
                 setError('Nie udało się załadować słownika badań fizykalnych');
             })
-            .finally(()=>{
+            .finally(() => {
                 setLoading(false);
             });
-    },[]);
+    }, []);
 
-    const handleSubmit = (event) =>{
+    const handleSubmit = (event) => {
         event.preventDefault();
-        if(!selectedCode || !result){
-            alert('Proszę wybrać badanie i wpisać wynik');
+        setSubmitStatus({ error: null, success: null });
+
+        if (!selectedCode || !result) {
+            setSubmitStatus({ error: 'Proszę wybrać badanie i wpisać wynik', success: null });
             return;
         }
-        console.log('Dane do zapisu: ', {
-            visitId:visitId,
-            code: selectedCode,
-            result: result
-        });
+
         const payload = {
             code: selectedCode,
             result: result
         };
+
         axiosInstance.post(`visits/${visitId}/physical-exams`, payload)
-            .then(response=>{
+            .then(response => {
+                setSubmitStatus({ error: null, success: 'Badanie fizykalne zostało pomyślnie dodane.' });
                 setSelectedCode('');
                 setResult('');
-                
+                if (onExamAdded) { // Call the callback if it exists
+                    onExamAdded();
+                }
             })
-            .catch(err=>{
+            .catch(err => {
+                setSubmitStatus({ error: 'Błąd podczas dodawania badania. Spróbuj ponownie.', success: null });
                 console.error("Błąd podczas dodawania badania", err);
-            })
-        
+            });
+    };
+
+    if (loading) {
+        return (
+            <div className="text-center my-4">
+                <Spinner animation="border" variant="primary" />
+                <p className="mt-2">Ładowanie formularza badań...</p>
+            </div>
+        );
     }
 
-    if(loading){
-        return <p>Ładowanie formularza badań</p>
+    if (error) {
+        return <Alert variant="danger">{error}</Alert>;
+    }
 
-    }
-    if(error){
-        return <p>{error}</p>
-    }
-    return(
-        <div className='parent' style={{ marginTop: '30px', borderTop: '1px solid #ccc', paddingTop: '20px'}}>
-            <h3>Dodaj badanie fizykalne</h3>
-            <form onSubmit={handleSubmit}>
-                <div style={{marginBottom:'15px'}}>
-                    <label htmlFor="exam-code">Badanie</label>
-                    <select id="exam-code"
-                        value={selectedCode}
-                        onChange={e=> setSelectedCode(e.target.value)}
-                        required
-                        style={{width:'100%', padding:'10px'}}>
-                            <option value="" disabled>Wybierz badanie z listy...</option>
-                            {codes.map(code=>(
-                                <option key={code.code} value={code.code}>
-                                    {code.code} ({code.name})
-                                </option>
-                            ))}
-                        </select>
-                </div>
-                <div>
-                    <label htmlFor="exam-result">Wynik</label>
-                    <textarea
-                        id="exam-result"
-                        value={result}
-                        onChange={e=>setResult(e.target.value)}
-                        required
-                        rows="4"
-                        >
-                        </textarea>
-                </div>
-                <button type="submit" style={{padding:'10px 15px'}}>Dodaj badanie</button>
-            </form>
-        </div>
+    return (
+        <Card className="mt-4 shadow-sm">
+            <Card.Header as="h5" style={{ backgroundColor: '#f8f9fa' }}>Dodaj badanie fizykalne</Card.Header>
+            <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                    <Row className="g-3">
+                        <Col xs={12}>
+                            <Form.Group controlId="physicalExamCode">
+                                <Form.Label>Badanie</Form.Label>
+                                <Form.Select value={selectedCode} onChange={e => setSelectedCode(e.target.value)} required>
+                                    <option value="" disabled>Wybierz badanie z listy...</option>
+                                    {codes.map(code => (
+                                        <option key={code.code} value={code.code}>
+                                            {code.code} ({code.name})
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col xs={12}>
+                            <Form.Group controlId="physicalExamResult">
+                                <Form.Label>Wynik</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={4}
+                                    value={result}
+                                    onChange={e => setResult(e.target.value)}
+                                    required
+                                    placeholder="Wprowadź wynik badania..."
+                                />
+                            </Form.Group>
+                        </Col>
+
+                        <Col xs={12}>
+                            {submitStatus.error && <Alert variant="danger" className="mt-2">{submitStatus.error}</Alert>}
+                            {submitStatus.success && <Alert variant="success" className="mt-2">{submitStatus.success}</Alert>}
+                        </Col>
+
+                        <Col xs={12} className="text-end">
+                            <Button variant="primary" type="submit">
+                                Dodaj badanie
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form>
+            </Card.Body>
+        </Card>
     );
 }
 
