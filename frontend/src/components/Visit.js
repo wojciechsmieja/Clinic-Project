@@ -42,6 +42,7 @@ function Visit() {
     const groupedVisits = useMemo(() => {
         const scheduled = visits.filter(v => v.status.toLowerCase() === "umówiona");
         const others = visits.filter(v => v.status.toLowerCase() !== "umówiona");
+        console.log(others);
         return { scheduled, others };
     }, [visits]);
 
@@ -82,12 +83,43 @@ function Visit() {
         }
     };
 
+    const renderHistoryVisitItem = (visit) => (
+        <ListGroup.Item key={visit.id_wiz} className="p-3">
+            <Row className="align-items-center">
+                <Col md={3}>
+                    <div className="fw-bold">{visit.patient ? `${visit.patient.name} ${visit.patient.surname}` : 'Brak danych pacjenta'}</div>
+                    <p className="mb-0 mt-1">{visit.opis}</p>
+                </Col>
+                <Col md={3}>
+                    <div>Data wizyty</div>
+                    <div className="fw-light">{new Date(visit.data_wiz).toLocaleString('pl-PL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
+                </Col>
+                <Col md={3}>
+                    { visit.cancelDate &&
+                        <>
+                            <div>Data anulowania/zakończenia</div>
+                            <div className="fw-light">{new Date(visit.cancelDate).toLocaleString('pl-PL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</div>
+                        </>
+                    }
+                </Col>
+                <Col md={3} className="text-md-end">
+                    <Badge bg={getBadgeVariant(visit.status)} pill className="fs-6">{visit.status}</Badge>
+                </Col>
+            </Row>
+        </ListGroup.Item>
+    );
+
     const renderVisitItem = (visit, isScheduled) => (
         <ListGroup.Item key={visit.id_wiz} className="p-3">
             <Row className="align-items-center">
                 <Col md={8}>
                     <div className="fw-bold">{visit.patient ? `${visit.patient.name} ${visit.patient.surname}` : 'Brak danych pacjenta'}</div>
-                    <div className="text-muted">{new Date(visit.data_wiz).toLocaleString('pl-PL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })} • {formatDuration(visit.czas_trwania)}</div>
+                    <div className="text-muted">
+                        {new Date(visit.data_wiz).toLocaleString('pl-PL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })} • {formatDuration(visit.czas_trwania)}
+                        {visit.status.toLowerCase() === 'anulowana' && visit.cancelDate &&
+                            ` • Anulowano: ${new Date(visit.cancelDate).toLocaleString('pl-PL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+                        }
+                    </div>
                     <p className="mb-0 mt-1">{visit.opis}</p>
                 </Col>
                 <Col md={4} className="text-md-end mt-2 mt-md-0">
@@ -141,7 +173,7 @@ function Visit() {
                     <Card.Header as="h5">Historia wizyt</Card.Header>
                     <ListGroup variant="flush">
                         {groupedVisits.others.length > 0 ?
-                            groupedVisits.others.map(v => renderVisitItem(v, false)) :
+                            groupedVisits.others.map(v => renderHistoryVisitItem(v)) :
                             <ListGroup.Item>Brak historii wizyt.</ListGroup.Item>
                         }
                     </ListGroup>
